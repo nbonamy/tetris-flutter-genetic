@@ -35,4 +35,14 @@ class PieceI extends Piece {
     }
   }
 
+  @override
+  rotate() {
+    if (this.rotation == Rotation.Normal || this.rotation == Rotation.SixOClock) {
+      this.x++;
+    } else {
+      this.x--;
+    }
+    super.rotate();
+  }
+
 }

@@ -25,7 +25,7 @@ class Game {
   Game() {
 
     // easy
-    this._level = 0;
+    this._level = 1;
     this._count = 0;
     this._lines = 0;
     this._finished = false;
@@ -39,11 +39,11 @@ class Game {
 
   }
 
-  bool get finished {
+  bool get isFinished {
     return this._finished;
   }
 
-  int get level {
+  int get currentLevel {
     return this._level;
   }
 
@@ -51,12 +51,12 @@ class Game {
     return this._count;
   }
 
-  int get lines {
+  int get linesCompleted {
     return this._lines;
   }
 
   int get delay {
-    return 1000 - this._level * 100;
+    return 1100 - this._level * 100;
   }
 
   Board get board {
@@ -68,21 +68,12 @@ class Game {
     // move the current piece
     if (_currentPiece != null) {
 
-      // collision
-      bool collision = false;
-      if (_currentPiece.y + _currentPiece.height >= _board.height) {
-        collision = true;
-      } else {
-        collision = _checkCollision(_currentPiece, 0, 1);
-      }
-
       // stop or move
-      if (collision) {
+      if (_checkCollision(_currentPiece, 0, 1)) {
 
         // end of game
         if (_currentPiece?.y == 0) {
-          _currentPiece.y -= _currentPiece.height;
-          this._finished = true;
+          _finished = true;
           return false;
         }
 
@@ -102,6 +93,10 @@ class Game {
     // do we need a piece
     if (_finished == false && _currentPiece == null) {
       _currentPiece = _addPiece();
+      while (_checkCollision(_currentPiece, 0, 0)) {
+        _currentPiece.y--;
+        _finished = true;
+      }
       return true;
     }
 
@@ -126,22 +121,51 @@ class Game {
     }
   }
 
-  void rotate() {
-    _currentPiece?.rotate();
+  bool rotate() {
+
+    // we need a piece
+    if (_currentPiece == null) {
+      return false;
+    }
+
+    // save values
+    int x = _currentPiece.x;
+    int y = _currentPiece.y;
+    Rotation rot = _currentPiece.rotation;
+
+    // rotate
+    _currentPiece.rotate();
+
+    // if collision restore
+    if (_checkCollision(_currentPiece, 0, 0)) {
+      _currentPiece.x = x;
+      _currentPiece.y = y;
+      _currentPiece.rotation = rot;
+      return false;
+    }
+
+    // done
+    return true;
+
   }
 
   bool _checkCollision(Piece piece, int deltaX, int deltaY) {
 
-    // check
+    // check boundaries
     List<List<bool>> blocks = piece.blocks;
+    int newX = piece.x + piece.blocks.first.length - 1 + deltaX;
+    int newY = piece.y + piece.blocks.length - 1 + deltaY;
+    if (newX < 0 || newX >= _board.width || newY >= _board.height) {
+      return true;
+    }
+
+    // check
     for (int j=0; j<blocks.length; j++) {
-      if (_currentPiece.y+j+deltaY <= _board.height-1) {
-        List<bool> row = blocks[j];
-        for (int i=0; i<row.length; i++) {
-          if (row[i] && _currentPiece.x+i+deltaX <= _board.width-1) {
-            if (_boardState[_currentPiece.y+j+deltaY][_currentPiece.x+i+deltaX] != null) {
-              return true;
-            }
+      List<bool> row = blocks[j];
+      for (int i=0; i<row.length; i++) {
+        if (row[i]) {
+          if (_boardState[piece.y+j+deltaY][piece.x+i+deltaX] != null) {
+            return true;
           }
         }
       }
@@ -220,10 +244,10 @@ class Game {
     // place each block
     List<List<bool>> blocks = piece.blocks;
     for (int j=0; j<blocks.length; j++) {
-      if (j+piece.y < this._board.height) {
+      if (j+piece.y >= 0 && j+piece.y <= this._board.height-1) {
         List<bool> row = blocks[j];
         for (int i=0; i<row.length; i++) {
-          if (row[i] && i+piece.x < this._board.width) {
+          if (row[i] && i+piece.x <= this._board.width-1) {
             state[j+piece.y][i+piece.x] = piece.color;
           }
         }
@@ -240,6 +264,7 @@ class Game {
   }
 
   Piece _randomPiece() {
+
 
     List types = PieceType.values;
     PieceType type = types[_random.nextInt(types.length)];
@@ -263,6 +288,5 @@ class Game {
     }
 
   }
-
 
 }

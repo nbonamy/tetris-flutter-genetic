@@ -26,3 +26,10 @@ flutter:
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
 
+  fonts:
+    - family: PixelMix
+      fonts:
+        - asset: assets/fonts/pixelmix.ttf
+        - asset: assets/fonts/pixelmix_bold.ttf
+          weight: 700
+
