@@ -31,10 +31,10 @@ class _GameScreenState extends State<GameScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Decorator(
+    return Scaffold(
+      body: Decorator(
         paddingTop: 64,
-        alignment: Alignment.center,
+        alignment: Alignment.topCenter,
         backgroundColor: Colors.black,
         child: Column(
           children: [
