@@ -46,11 +46,11 @@ class _GameScreenState extends State<GameScreen> {
     // calc stats
     Stats stats = Stats.from(game: _game);
 
-    // next piece
-    List<List<bool>> nextPieceBlocks = _game.nextPiece?.blocks;
-    List<List<Color>> nextPieceColors = List.generate(nextPieceBlocks.length, (j) {
-      return List.generate(nextPieceBlocks[j].length, (i) {
-        return nextPieceBlocks[j][i] == true ? _game.nextPiece.color : null;
+    // next tetromino
+    List<List<bool>> nextTetrominoBlocks = _game.nextTetromino?.blocks;
+    List<List<Color>> nextTetrominoColors = List.generate(nextTetrominoBlocks.length, (j) {
+      return List.generate(nextTetrominoBlocks[j].length, (i) {
+        return nextTetrominoBlocks[j][i] == true ? _game.nextTetromino.color : null;
       });
     });
 
@@ -75,7 +75,7 @@ class _GameScreenState extends State<GameScreen> {
                     SizedBox(height: 16,),
                     CustomPaint(
                       foregroundPainter: BlockPainter(
-                        blocks: nextPieceColors,
+                        blocks: nextTetrominoColors,
                         cellSize: 10,
                       ),
                     ),

@@ -2,15 +2,15 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:tetris/model/piece.dart';
+import 'package:tetris/model/tetromino.dart';
 
-class PieceJ extends Piece {
-
-  @override
-  PieceType get type => PieceType.j;
+class PieceL extends Tetromino {
 
   @override
-  Color get color => Colors.pink;
+  PieceType get type => PieceType.l;
+
+  @override
+  Color get color => Colors.yellow;
 
   @override
   int get height {
@@ -30,14 +30,15 @@ class PieceJ extends Piece {
   List<List<bool>> get blocks {
     switch (this.rotation) {
       case Rotation.ThreeOClock:
-        return [ [false,true], [false,true], [true,true] ];
+        return [ [true,true], [false,true], [false,true] ];
       case Rotation.SixOClock:
-        return [ [true,false,false], [true,true,true] ];
+        return [ [false,false,true], [true,true,true] ];
       case Rotation.NineOClock:
-        return [ [true,true], [true,false], [true,false] ];
+        return [ [true,false], [true,false], [true,true] ];
       default:
-        return [ [true,true,true], [false,false,true] ];
+        return [ [true,true,true], [true,false,false] ];
     }
   }
+
 
 }

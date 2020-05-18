@@ -1,22 +1,22 @@
 
 import 'dart:math';
 import 'package:flutter/painting.dart';
-import 'package:tetris/model/piece.dart';
+import 'package:tetris/model/tetromino.dart';
 import 'package:tetris/model/board.dart';
-import 'package:tetris/model/pieces/i.dart';
-import 'package:tetris/model/pieces/j.dart';
-import 'package:tetris/model/pieces/l.dart';
-import 'package:tetris/model/pieces/o.dart';
-import 'package:tetris/model/pieces/s.dart';
-import 'package:tetris/model/pieces/t.dart';
-import 'package:tetris/model/pieces/z.dart';
+import 'package:tetris/model/tetrominos/i.dart';
+import 'package:tetris/model/tetrominos/j.dart';
+import 'package:tetris/model/tetrominos/l.dart';
+import 'package:tetris/model/tetrominos/o.dart';
+import 'package:tetris/model/tetrominos/s.dart';
+import 'package:tetris/model/tetrominos/t.dart';
+import 'package:tetris/model/tetrominos/z.dart';
 
 class Game {
 
   static const double kInitialSpeed = 1000;
   static const int kIncreaseLevelEvery = 25;
-  static const int kPieceMovedPoint = 1;
-  static const int kPieceDroppedPoint = 10;
+  static const int kTetrominoMovedPoint = 1;
+  static const int kTetrominoDroppedPoint = 10;
   static const List<int> kLinesCompletedPoints = [
     100,
     250,
@@ -31,8 +31,8 @@ class Game {
 
   Board _board;
   bool _finished;
-  Piece _nextPiece;
-  Piece _currentPiece;
+  Tetromino _nextTetromino;
+  Tetromino _currentTetromino;
   List<List<Color>> _boardState;
   Random _random;
 
@@ -52,9 +52,9 @@ class Game {
       return List.generate(this._board.width, (_) => null);
     });
 
-    // get two pieces
-    _currentPiece = _newPiece();
-    _nextPiece = _newPiece();
+    // get two tetrominos
+    _currentTetromino = _newTetromino();
+    _nextTetromino = _newTetromino();
 
   }
 
@@ -66,7 +66,7 @@ class Game {
     return this._level;
   }
 
-  int get piecesCount {
+  int get tetrominos {
     return this._count;
   }
 
@@ -86,54 +86,54 @@ class Game {
     return this._board;
   }
 
-  Piece get currentPiece {
-    return _currentPiece;
+  Tetromino get currentTetromino {
+    return _currentTetromino;
   }
 
-  Piece get nextPiece {
-    return _nextPiece;
+  Tetromino get nextTetromino {
+    return _nextTetromino;
   }
 
   bool tick() {
 
-    // move the current piece
-    if (_currentPiece != null) {
+    // move the current tetromino
+    if (_currentTetromino != null) {
 
       // stop or move
-      if (_checkCollision(_currentPiece, 0, 1)) {
+      if (_checkCollision(_currentTetromino, 0, 1)) {
 
         // end of game
-        if (_currentPiece?.y == 0) {
+        if (_currentTetromino?.y == 0) {
           _finished = true;
           return false;
         }
 
-        // add piece to state and check completed lines
-        _addPieceToState(_boardState, _currentPiece);
+        // add tetromino to state and check completed lines
+        _addTetrominoToState(_boardState, _currentTetromino);
         _checkCompletedLines();
-        _currentPiece = null;
+        _currentTetromino = null;
 
         // score
-        _score += kPieceDroppedPoint;
+        _score += kTetrominoDroppedPoint;
 
 
       } else {
 
         // simply move it down
-        _currentPiece.y++;
+        _currentTetromino.y++;
 
         // score
-        _score += kPieceMovedPoint;
+        _score += kTetrominoMovedPoint;
 
       }
     }
 
-    // do we need a piece
-    if (_finished == false && _currentPiece == null) {
-      _currentPiece = _nextPiece;
-      _nextPiece = _newPiece();
-      while (_checkCollision(_currentPiece, 0, 0)) {
-        _currentPiece.y--;
+    // do we need a tetromino
+    if (_finished == false && _currentTetromino == null) {
+      _currentTetromino = _nextTetromino;
+      _nextTetromino = _newTetromino();
+      while (_checkCollision(_currentTetromino, 0, 0)) {
+        _currentTetromino.y--;
         _finished = true;
       }
       return true;
@@ -145,41 +145,41 @@ class Game {
   }
 
   void moveLeft() {
-    if (_currentPiece != null && _currentPiece.x > 0) {
-      if (_checkCollision(_currentPiece, -1, 0) == false) {
-        _currentPiece.x--;
+    if (_currentTetromino != null && _currentTetromino.x > 0) {
+      if (_checkCollision(_currentTetromino, -1, 0) == false) {
+        _currentTetromino.x--;
       }
     }
   }
 
   void moveRight() {
-    if (_currentPiece != null && _currentPiece.x + _currentPiece.width < _board.width) {
-      if (_checkCollision(_currentPiece, 1, 0) == false) {
-        _currentPiece.x++;
+    if (_currentTetromino != null && _currentTetromino.x + _currentTetromino.width < _board.width) {
+      if (_checkCollision(_currentTetromino, 1, 0) == false) {
+        _currentTetromino.x++;
       }
     }
   }
 
   bool rotate() {
 
-    // we need a piece
-    if (_currentPiece == null) {
+    // we need a tetromino
+    if (_currentTetromino == null) {
       return false;
     }
 
     // save values
-    int x = _currentPiece.x;
-    int y = _currentPiece.y;
-    Rotation rot = _currentPiece.rotation;
+    int x = _currentTetromino.x;
+    int y = _currentTetromino.y;
+    Rotation rot = _currentTetromino.rotation;
 
     // rotate
-    _currentPiece.rotate();
+    _currentTetromino.rotate();
 
     // if collision restore
-    if (_checkCollision(_currentPiece, 0, 0)) {
-      _currentPiece.x = x;
-      _currentPiece.y = y;
-      _currentPiece.rotation = rot;
+    if (_checkCollision(_currentTetromino, 0, 0)) {
+      _currentTetromino.x = x;
+      _currentTetromino.y = y;
+      _currentTetromino.rotation = rot;
       return false;
     }
 
@@ -196,25 +196,25 @@ class Game {
     }
   }
 
-  bool _checkCollision(Piece piece, int deltaX, int deltaY) {
+  bool _checkCollision(Tetromino tetromino, int deltaX, int deltaY) {
 
     // check boundaries
-    List<List<bool>> blocks = piece.blocks;
-    int newX = piece.x + piece.blocks.first.length - 1 + deltaX;
-    int newY = piece.y + piece.blocks.length - 1 + deltaY;
+    List<List<bool>> blocks = tetromino.blocks;
+    int newX = tetromino.x + tetromino.blocks.first.length - 1 + deltaX;
+    int newY = tetromino.y + tetromino.blocks.length - 1 + deltaY;
     if (newX < 0 || newX >= _board.width || newY >= _board.height) {
       return true;
     }
 
     // check
     for (int j=0; j<blocks.length; j++) {
-      int newY = piece.y+j+deltaY;
+      int newY = tetromino.y+j+deltaY;
       if (newY >= 0 && newY <= _board.height -1) {
         List<bool> row = blocks[j];
         for (int i=0; i<row.length; i++) {
-          int newX = piece.x+i+deltaX;
+          int newX = tetromino.x+i+deltaX;
           if (row[i] && newX >= 0 && newX <= _board.width - 1) {
-            if (_boardState[piece.y+j+deltaY][piece.x+i+deltaX] != null) {
+            if (_boardState[tetromino.y+j+deltaY][tetromino.x+i+deltaX] != null) {
               return true;
             }
           }
@@ -280,7 +280,7 @@ class Game {
     }
   }
 
-  List<List<Color>> getBoardState(bool includeCurrentPiece) {
+  List<List<Color>> getBoardState(bool includeCurrentTetromino) {
 
     // we send a clone anyways
     List<List<Color>> state = List.generate(_boardState.length, (j) {
@@ -289,9 +289,9 @@ class Game {
       });
     });
 
-    // add current piece if needed
-    if (includeCurrentPiece == true && _currentPiece != null) {
-      _addPieceToState(state, _currentPiece);
+    // add current tetromino if needed
+    if (includeCurrentTetromino == true && _currentTetromino != null) {
+      _addTetrominoToState(state, _currentTetromino);
     }
 
     // done
@@ -299,16 +299,16 @@ class Game {
 
   }
 
-  void _addPieceToState(List<List<Color>> state, Piece piece) {
+  void _addTetrominoToState(List<List<Color>> state, Tetromino tetromino) {
 
     // place each block
-    List<List<bool>> blocks = piece.blocks;
+    List<List<bool>> blocks = tetromino.blocks;
     for (int j=0; j<blocks.length; j++) {
-      if (j+piece.y >= 0 && j+piece.y <= this._board.height-1) {
+      if (j+tetromino.y >= 0 && j+tetromino.y <= this._board.height-1) {
         List<bool> row = blocks[j];
         for (int i=0; i<row.length; i++) {
-          if (row[i] && i+piece.x <= this._board.width-1) {
-            state[j+piece.y][i+piece.x] = piece.color;
+          if (row[i] && i+tetromino.x <= this._board.width-1) {
+            state[j+tetromino.y][i+tetromino.x] = tetromino.color;
           }
         }
       }
@@ -316,33 +316,32 @@ class Game {
 
   }
 
-  Piece _newPiece() {
-    Piece piece = this._randomPiece();
-    piece.x = ((this._board.width - piece.width) / 2).floor();
+  Tetromino _newTetromino() {
+    Tetromino tetromino = this._randomTetromino();
+    tetromino.x = ((this._board.width - tetromino.width) / 2).floor();
     _incCount();
-    return piece;
+    return tetromino;
   }
 
-  Piece _randomPiece() {
+  Tetromino _randomTetromino() {
 
-
-    List types = PieceType.values;
-    PieceType type = types[_random.nextInt(types.length)];
+    List types = TetrominoType.values;
+    TetrominoType type = types[_random.nextInt(types.length)];
     switch (type) {
-      case PieceType.o:
-        return PieceO();
-      case PieceType.i:
-        return PieceI();
-      case PieceType.t:
-        return PieceT();
-      case PieceType.s:
-        return PieceS();
-      case PieceType.z:
-        return PieceZ();
-      case PieceType.j:
-        return PieceJ();
-      case PieceType.l:
-        return PieceL();
+      case TetrominoType.o:
+        return TetrominoO();
+      case TetrominoType.i:
+        return TetrominoI();
+      case TetrominoType.t:
+        return TetrominoT();
+      case TetrominoType.s:
+        return TetrominoS();
+      case TetrominoType.z:
+        return TetrominoZ();
+      case TetrominoType.j:
+        return TetrominoJ();
+      case TetrominoType.l:
+        return TetrominoL();
       default:
         return null;
     }

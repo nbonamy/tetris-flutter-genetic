@@ -2,12 +2,12 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:tetris/model/piece.dart';
+import 'package:tetris/model/tetromino.dart';
 
-class PieceZ extends Piece {
+class TetrominoZ extends Tetromino {
 
   @override
-  PieceType get type => PieceType.z;
+  TetrominoType get type => TetrominoType.z;
 
   @override
   Color get color => Colors.green;

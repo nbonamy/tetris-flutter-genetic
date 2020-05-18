@@ -1,16 +1,16 @@
 
 import 'package:flutter/widgets.dart';
-import 'package:tetris/model/piece.dart';
+import 'package:tetris/model/tetromino.dart';
 
 class BlockPainter extends CustomPainter {
 
   final List<List<Color>> blocks;
-  final Piece currentPiece;
+  final Tetromino currentTetromino;
   final double cellSize;
   final double spacing;
   BlockPainter({
     @required this.blocks,
-    this.currentPiece,
+    this.currentTetromino,
     @required this.cellSize,
     this.spacing,
   });
@@ -43,18 +43,18 @@ class BlockPainter extends CustomPainter {
       }
     }
 
-    // current piece guidelines
-    if (currentPiece != null) {
+    // current tetromino guidelines
+    if (currentTetromino != null) {
 
       // aint
-      Paint paint = new Paint()..color = currentPiece.color.withOpacity(0.5);
+      Paint paint = new Paint()..color = currentTetromino.color.withOpacity(0.5);
 
       // get blocks
       int leftOffset = 0;
       int rightOffset = 0;
       bool leftFound = false;
       bool rightFound = false;
-      List<List<bool>> blocks = currentPiece.blocks;
+      List<List<bool>> blocks = currentTetromino.blocks;
       for (int j=blocks.length-1; j>=0; j--) {
         if (blocks[j][0] == true) { leftFound = true; }
         else if (leftFound == false) { leftOffset--; }
@@ -63,12 +63,12 @@ class BlockPainter extends CustomPainter {
       }
 
       // left line
-      Offset p1 = Offset(currentPiece.x * cellSize, (currentPiece.y + currentPiece.height + leftOffset) * cellSize);
+      Offset p1 = Offset(currentTetromino.x * cellSize, (currentTetromino.y + currentTetromino.height + leftOffset) * cellSize);
       Offset p2 = Offset(p1.dx, 20 * cellSize);
       canvas.drawLine(p1, p2, paint);
 
       // right line
-      Offset p3 = Offset((currentPiece.x + currentPiece.width) * cellSize, (currentPiece.y + currentPiece.height + rightOffset) * cellSize);
+      Offset p3 = Offset((currentTetromino.x + currentTetromino.width) * cellSize, (currentTetromino.y + currentTetromino.height + rightOffset) * cellSize);
       Offset p4 = Offset(p3.dx, p2.dy);
       canvas.drawLine(p3, p4, paint);
 

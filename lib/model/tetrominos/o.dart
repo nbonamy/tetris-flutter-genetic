@@ -1,8 +1,8 @@
 
 import 'package:flutter/material.dart';
-import 'package:tetris/model/piece.dart';
+import 'package:tetris/model/tetromino.dart';
 
-class PieceO extends Piece {
+class PieceO extends Tetromino {
 
   @override
   PieceType get type => PieceType.o;
