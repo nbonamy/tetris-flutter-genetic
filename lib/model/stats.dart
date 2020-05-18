@@ -10,7 +10,7 @@ class Stats {
   double _avgHeight;
   double _heightSD;
 
-  int get holes => _holes;
+  int get numHoles => _holes;
   int get minHeight => _minHeight;
   int get maxHeight => _maxHeight;
   double get avgHeight => _avgHeight;

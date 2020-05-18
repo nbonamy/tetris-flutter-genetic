@@ -130,10 +130,11 @@ class _GameScreenState extends State<GameScreen> {
                 }
               },
             ),
+            SizedBox(height: 16,),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                UIUtils.text('holes: ${stats.holes}'),
+                UIUtils.text('holes: ${stats.numHoles}'),
                 UIUtils.text('min: ${stats.minHeight}'),
                 UIUtils.text('max: ${stats.maxHeight}'),
                 UIUtils.text('avg: ${stats.avgHeight}'),
