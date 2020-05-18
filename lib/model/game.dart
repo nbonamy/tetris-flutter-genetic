@@ -1,6 +1,5 @@
 
 import 'dart:math';
-import 'package:flutter/painting.dart';
 import 'package:tetris/model/tetromino.dart';
 import 'package:tetris/model/board.dart';
 import 'package:tetris/model/tetrominos/i.dart';
@@ -33,7 +32,7 @@ class Game {
   bool _finished;
   Tetromino _nextTetromino;
   Tetromino _currentTetromino;
-  List<List<Color>> _boardState;
+  List<List<TetrominoType>> _boardState;
   Random _random;
 
   Game() {
@@ -253,7 +252,7 @@ class Game {
 
       // check if complete
       bool complete = true;
-      List<Color> row = _boardState[j];
+      List<TetrominoType> row = _boardState[j];
       for (int i=0; i<row.length; i++) {
         if (row[i] == null) {
           complete = false;
@@ -296,10 +295,10 @@ class Game {
     }
   }
 
-  List<List<Color>> getBoardState(bool includeCurrentTetromino) {
+  List<List<TetrominoType>> getBoardState(bool includeCurrentTetromino) {
 
     // we send a clone anyways
-    List<List<Color>> state = List.generate(_boardState.length, (j) {
+    List<List<TetrominoType>> state = List.generate(_boardState.length, (j) {
       return List.generate(_boardState[j].length, (i) {
         return _boardState[j][i];
       });
@@ -315,7 +314,7 @@ class Game {
 
   }
 
-  void _addTetrominoToState(List<List<Color>> state, Tetromino tetromino) {
+  void _addTetrominoToState(List<List<TetrominoType>> state, Tetromino tetromino) {
 
     // place each block
     List<List<TetrominoType>> blocks = tetromino.blocks;
@@ -324,7 +323,7 @@ class Game {
         List<TetrominoType> row = blocks[j];
         for (int i=0; i<row.length; i++) {
           if (row[i] != null && i+tetromino.x <= this._board.width-1) {
-            state[j+tetromino.y][i+tetromino.x] = tetromino.color;
+            state[j+tetromino.y][i+tetromino.x] = tetromino.type;
           }
         }
       }

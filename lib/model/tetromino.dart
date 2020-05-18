@@ -1,6 +1,4 @@
 
-import 'package:flutter/material.dart';
-
 enum TetrominoType {
   o,
   i,
@@ -32,7 +30,6 @@ abstract class Tetromino {
   }
 
   TetrominoType get type;
-  Color get color;
   int get width;
   int get height;
 

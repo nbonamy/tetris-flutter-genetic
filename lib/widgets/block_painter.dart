@@ -1,10 +1,11 @@
 
 import 'package:flutter/widgets.dart';
 import 'package:tetris/model/tetromino.dart';
+import 'package:tetris/utils/ui.dart';
 
 class BlockPainter extends CustomPainter {
 
-  final List<List<Color>> blocks;
+  final List<List<TetrominoType>> blocks;
   final Tetromino currentTetromino;
   final double cellSize;
   final double spacing;
@@ -26,10 +27,10 @@ class BlockPainter extends CustomPainter {
 
     // first draw each block
     for (int j=0; j<blocks.length; j++) {
-      List<Color> row = blocks[j];
+      List<TetrominoType> row = blocks[j];
       for (int i=0; i<row.length; i++) {
         if (row[i] != null) {
-          Paint paint = new Paint()..color = row[i];
+          Paint paint = new Paint()..color = UIUtils.tetrominoColor(row[i]);
           Rect rect = new Rect.fromLTWH(
             i * cellSize + _spacing,
             j * cellSize + _spacing,
@@ -47,7 +48,7 @@ class BlockPainter extends CustomPainter {
     if (currentTetromino != null) {
 
       // aint
-      Paint paint = new Paint()..color = currentTetromino.color.withOpacity(0.5);
+      Paint paint = new Paint()..color = UIUtils.tetrominoColor(currentTetromino.type).withOpacity(0.5);
 
       // get blocks
       int leftOffset = 0;

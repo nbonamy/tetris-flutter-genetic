@@ -1,16 +1,10 @@
 
-import 'dart:ui';
-
-import 'package:flutter/material.dart';
 import 'package:tetris/model/tetromino.dart';
 
 class TetrominoJ extends Tetromino {
 
   @override
   TetrominoType get type => TetrominoType.j;
-
-  @override
-  Color get color => Colors.pink;
 
   @override
   int get height {

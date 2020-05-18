@@ -49,9 +49,9 @@ class _GameScreenState extends State<GameScreen> {
 
     // next tetromino
     List<List<TetrominoType>> nextTetrominoBlocks = _game.nextTetromino?.blocks;
-    List<List<Color>> nextTetrominoColors = List.generate(nextTetrominoBlocks.length, (j) {
+    List<List<TetrominoType>> nextTetrominoColors = List.generate(nextTetrominoBlocks.length, (j) {
       return List.generate(nextTetrominoBlocks[j].length, (i) {
-        return nextTetrominoBlocks[j][i] != null ? _game.nextTetromino.color : null;
+        return nextTetrominoBlocks[j][i] != null ? _game.nextTetromino.type : null;
       });
     });
 

@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:stanley/stanley.dart';
+import 'package:tetris/model/tetromino.dart';
 import 'package:tetris/utils/consts.dart';
 
 class UIUtils {
@@ -17,5 +18,31 @@ class UIUtils {
       size: size,
       bold: bold,
     );
+  }
+
+  static Color tetrominoColor(TetrominoType type) {
+
+    switch (type) {
+
+      case TetrominoType.o:
+        return Colors.blue;
+      case TetrominoType.i:
+        return Colors.red;
+      case TetrominoType.t:
+        return Colors.grey;
+      case TetrominoType.s:
+        return Colors.orange;
+      case TetrominoType.z:
+        return Colors.green;
+      case TetrominoType.j:
+        return Colors.pink;
+      case TetrominoType.l:
+        return Colors.yellow;
+      default:
+        return Colors.white;
+    }
+
+
+
   }
 }

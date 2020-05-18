@@ -1,7 +1,8 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:tetris/model/game.dart';
+import 'package:tetris/model/tetromino.dart';
 import 'package:tetris/utils/number.dart';
 
 class Stats {
@@ -20,13 +21,14 @@ class Stats {
   Stats.from({
     @required Game game,
   }) {
+
     // based on
-    List<List<Color>> state = game.getBoardState(false);
+    List<List<TetrominoType>> state = game.getBoardState(false);
 
     // holes
     List<int> holes = List.generate(game.board.width, (_) => null);
     for (int j = 0; j < game.board.height; j++) {
-      List<Color> row = state[j];
+      List<TetrominoType> row = state[j];
       for (int i = 0; i < row.length; i++) {
         if (row[i] == null) {
           if (holes[i] != null) {
@@ -44,7 +46,7 @@ class Stats {
     // height of each column
     List<int> heights = List.generate(game.board.width, (_) => 0);
     for (int j = 0; j < game.board.height; j++) {
-      List<Color> row = state[j];
+      List<TetrominoType> row = state[j];
       for (int i = 0; i < row.length; i++) {
         if (row[i] != null && heights[i] == 0) {
           heights[i] = game.board.height - j;
