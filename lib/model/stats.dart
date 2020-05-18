@@ -42,10 +42,10 @@ class Stats {
 
     // height of each column
     List<int> heights = List.generate(game.board.width, (_) => 0);
-    for (int j = state.length - 1; j >= 0; j--) {
+    for (int j = 0; j < game.board.height; j++) {
       List<Color> row = state[j];
       for (int i = 0; i < row.length; i++) {
-        if (row[i] != null) {
+        if (row[i] != null && heights[i] == 0) {
           heights[i] = game.board.height - j;
         }
       }
