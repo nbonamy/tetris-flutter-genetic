@@ -13,9 +13,20 @@ import 'package:tetris/model/pieces/z.dart';
 
 class Game {
 
+  static const int kIncreaseLevelEvery = 20;
+  static const int kPieceMovePoint = 1;
+  static const List<int> kLinesCompletedPoints = [
+    100,
+    250,
+    500,
+    1000,
+  ];
+
   int _level;
   int _count;
   int _lines;
+  int _score;
+
   Board _board;
   bool _finished;
   Piece _currentPiece;
@@ -28,6 +39,7 @@ class Game {
     this._level = 1;
     this._count = 0;
     this._lines = 0;
+    this._score = 0;
     this._finished = false;
     this._board = Board();
     this._random = Random();
@@ -53,6 +65,10 @@ class Game {
 
   int get linesCompleted {
     return this._lines;
+  }
+
+  int get score {
+    return this._score;
   }
 
   int get delay {
@@ -86,6 +102,9 @@ class Game {
 
         // simply move it down
         _currentPiece.y++;
+
+        // add one one point
+        _score += kPieceMovePoint;
 
       }
     }
@@ -161,11 +180,15 @@ class Game {
 
     // check
     for (int j=0; j<blocks.length; j++) {
-      List<bool> row = blocks[j];
-      for (int i=0; i<row.length; i++) {
-        if (row[i]) {
-          if (_boardState[piece.y+j+deltaY][piece.x+i+deltaX] != null) {
-            return true;
+      int newY = piece.y+j+deltaY;
+      if (newY >= 0 && newY <= _board.height -1) {
+        List<bool> row = blocks[j];
+        for (int i=0; i<row.length; i++) {
+          int newX = piece.x+i+deltaX;
+          if (row[i] && newX >= 0 && newX <= _board.width - 1) {
+            if (_boardState[piece.y+j+deltaY][piece.x+i+deltaX] != null) {
+              return true;
+            }
           }
         }
       }
@@ -177,6 +200,9 @@ class Game {
   }
 
   void _checkCompletedLines() {
+
+    // count lines completed
+    int linesCompleted = 0;
 
     // and process it
     for (int j=_boardState.length-1; j>=0; j--) {
@@ -206,16 +232,20 @@ class Game {
         j = j + 1;
 
         // and congrats
-        this._lines++;
+        linesCompleted++;
 
       }
 
     }
 
+    // update score
+    this._score += kLinesCompletedPoints[linesCompleted];
+    this._lines += linesCompleted;
+
   }
 
   void _incCount() {
-    if (++this._count % 100 == 0) {
+    if (++this._count % kIncreaseLevelEvery == 0) {
       this._level++;
     }
   }

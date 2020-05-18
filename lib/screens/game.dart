@@ -45,7 +45,7 @@ class _GameScreenState extends State<GameScreen> {
 
     return Scaffold(
       body: Decorator(
-        paddingTop: 64,
+        paddingTop: 48,
         alignment: Alignment.topCenter,
         backgroundColor: Colors.black,
         child: Column(
@@ -54,7 +54,7 @@ class _GameScreenState extends State<GameScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Score(title: 'LEVEL', value: _game.currentLevel),
-                Score(title: 'TILES', value: _game.piecesCount),
+                Score(title: 'SCORE', value: _game.score),
                 Score(title: 'LINES', value: _game.linesCompleted),
               ],
             ),
@@ -102,13 +102,13 @@ class _GameScreenState extends State<GameScreen> {
                 }
               },
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                UIHelper.text(stats.minHeight.toString(), color: Colors.white,),
-                UIHelper.text(stats.maxHeight.toString(), color: Colors.white,),
-                UIHelper.text(stats.avgHeight.toString(), color: Colors.white,),
-                UIHelper.text(stats.heightSD.toString(), color: Colors.white,),
+                UIHelper.text('min: ${stats.minHeight}', color: Colors.white,),
+                UIHelper.text('max: ${stats.maxHeight}', color: Colors.white,),
+                UIHelper.text('avg: ${stats.avgHeight}', color: Colors.white,),
+                UIHelper.text('std: ${stats.heightSD}', color: Colors.white,),
               ],
             )
           ],
