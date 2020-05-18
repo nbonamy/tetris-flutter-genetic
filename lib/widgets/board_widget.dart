@@ -32,7 +32,7 @@ class BoardWidget extends StatelessWidget {
           children: _buildRowIds(cellSize),
         ),
         Decorator(
-          marginLeft: 16,
+          marginLeft: 8,
           width: game.board.width * cellSize + 2 * borderSize,
           height: game.board.height * cellSize + 1 * borderSize,
           borderLeft: borderSize,
