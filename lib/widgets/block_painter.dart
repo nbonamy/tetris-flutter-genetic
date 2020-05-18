@@ -54,11 +54,11 @@ class BlockPainter extends CustomPainter {
       int rightOffset = 0;
       bool leftFound = false;
       bool rightFound = false;
-      List<List<bool>> blocks = currentTetromino.blocks;
+      List<List<TetrominoType>> blocks = currentTetromino.blocks;
       for (int j=blocks.length-1; j>=0; j--) {
-        if (blocks[j][0] == true) { leftFound = true; }
+        if (blocks[j][0] != null) { leftFound = true; }
         else if (leftFound == false) { leftOffset--; }
-        if (blocks[j][blocks[j].length-1] == true) { rightFound = true; }
+        if (blocks[j][blocks[j].length-1] != null) { rightFound = true; }
         else if (rightFound == false) { rightOffset--; }
       }
 

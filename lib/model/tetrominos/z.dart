@@ -27,11 +27,11 @@ class TetrominoZ extends Tetromino {
   }
 
   @override
-  List<List<bool>> get blocks {
+  List<List<TetrominoType>> get blocks {
     if (this.rotation == Rotation.Normal || this.rotation == Rotation.SixOClock) {
-      return [ [true,true,false], [false,true,true] ];
+      return [ [type,type,null], [null,type,type] ];
     } else {
-      return [ [false,true], [true,true], [true,false] ];
+      return [ [null,type], [type,type], [type,null] ];
     }
   }
 

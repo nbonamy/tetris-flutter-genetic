@@ -5,6 +5,7 @@ import 'package:stanley/stanley.dart';
 
 import 'package:tetris/model/game.dart';
 import 'package:tetris/model/stats.dart';
+import 'package:tetris/model/tetromino.dart';
 import 'package:tetris/utils/ui.dart';
 import 'package:tetris/widgets/block_painter.dart';
 import 'package:tetris/widgets/board_widget.dart';
@@ -47,10 +48,10 @@ class _GameScreenState extends State<GameScreen> {
     Stats stats = Stats.from(game: _game);
 
     // next tetromino
-    List<List<bool>> nextTetrominoBlocks = _game.nextTetromino?.blocks;
+    List<List<TetrominoType>> nextTetrominoBlocks = _game.nextTetromino?.blocks;
     List<List<Color>> nextTetrominoColors = List.generate(nextTetrominoBlocks.length, (j) {
       return List.generate(nextTetrominoBlocks[j].length, (i) {
-        return nextTetrominoBlocks[j][i] == true ? _game.nextTetromino.color : null;
+        return nextTetrominoBlocks[j][i] != null ? _game.nextTetromino.color : null;
       });
     });
 

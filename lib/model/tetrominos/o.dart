@@ -2,10 +2,10 @@
 import 'package:flutter/material.dart';
 import 'package:tetris/model/tetromino.dart';
 
-class PieceO extends Tetromino {
+class TetrominoO extends Tetromino {
 
   @override
-  PieceType get type => PieceType.o;
+  TetrominoType get type => TetrominoType.o;
 
   @override
   Color get color => Colors.blue;
@@ -17,8 +17,8 @@ class PieceO extends Tetromino {
   int get width => 2;
 
   @override
-  List<List<bool>> get blocks {
-    return [ [true,true], [true,true] ];
+  List<List<TetrominoType>> get blocks {
+    return [ [type,type], [type,type] ];
   }
 
 }

@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 
-enum PieceType {
+enum TetrominoType {
   o,
   i,
   t,
@@ -18,24 +18,24 @@ enum Rotation {
   NineOClock,
 }
 
-abstract class Piece {
+abstract class Tetromino {
 
   int x;
   int y;
   Rotation rotation;
 
-  Piece({
+  Tetromino({
     this.x = 0,
     this.y = 0,
     this.rotation = Rotation.Normal,
   });
 
-  PieceType get type;
+  TetrominoType get type;
   Color get color;
   int get width;
   int get height;
 
-  List<List<bool>> get blocks;
+  List<List<TetrominoType>> get blocks;
 
   void rotate() {
     switch (this.rotation) {

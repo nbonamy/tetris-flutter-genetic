@@ -199,7 +199,7 @@ class Game {
   bool _checkCollision(Tetromino tetromino, int deltaX, int deltaY) {
 
     // check boundaries
-    List<List<bool>> blocks = tetromino.blocks;
+    List<List<TetrominoType>> blocks = tetromino.blocks;
     int newX = tetromino.x + tetromino.blocks.first.length - 1 + deltaX;
     int newY = tetromino.y + tetromino.blocks.length - 1 + deltaY;
     if (newX < 0 || newX >= _board.width || newY >= _board.height) {
@@ -210,10 +210,10 @@ class Game {
     for (int j=0; j<blocks.length; j++) {
       int newY = tetromino.y+j+deltaY;
       if (newY >= 0 && newY <= _board.height -1) {
-        List<bool> row = blocks[j];
+        List<TetrominoType> row = blocks[j];
         for (int i=0; i<row.length; i++) {
           int newX = tetromino.x+i+deltaX;
-          if (row[i] && newX >= 0 && newX <= _board.width - 1) {
+          if (row[i] != null && newX >= 0 && newX <= _board.width - 1) {
             if (_boardState[tetromino.y+j+deltaY][tetromino.x+i+deltaX] != null) {
               return true;
             }
@@ -302,12 +302,12 @@ class Game {
   void _addTetrominoToState(List<List<Color>> state, Tetromino tetromino) {
 
     // place each block
-    List<List<bool>> blocks = tetromino.blocks;
+    List<List<TetrominoType>> blocks = tetromino.blocks;
     for (int j=0; j<blocks.length; j++) {
       if (j+tetromino.y >= 0 && j+tetromino.y <= this._board.height-1) {
-        List<bool> row = blocks[j];
+        List<TetrominoType> row = blocks[j];
         for (int i=0; i<row.length; i++) {
-          if (row[i] && i+tetromino.x <= this._board.width-1) {
+          if (row[i] != null && i+tetromino.x <= this._board.width-1) {
             state[j+tetromino.y][i+tetromino.x] = tetromino.color;
           }
         }
