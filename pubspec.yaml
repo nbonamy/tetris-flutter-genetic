@@ -9,6 +9,7 @@ dependencies:
   flutter:
     sdk: flutter
   stanley: ^0.1.0
+  flutter_statusbarcolor: ^0.2.3
   assets_audio_player: ^1.4.7+2
 
 dependency_overrides:
