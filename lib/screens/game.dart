@@ -28,7 +28,7 @@ class _GameScreenState extends State<GameScreen> {
     _assetsAudioPlayer.loop = true;
     _assetsAudioPlayer.open(
       Audio('assets/sounds/theme.mp3'),
-      volume: 0.25,
+      volume: 0,
     );
     this.reset();
   }
@@ -41,6 +41,7 @@ class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
 
+    // calc stats
     Stats stats = Stats.from(game: _game);
 
     // next piece
