@@ -105,10 +105,11 @@ class _GameScreenState extends State<GameScreen> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                UIHelper.text('min: ${stats.minHeight}', color: Colors.white,),
-                UIHelper.text('max: ${stats.maxHeight}', color: Colors.white,),
-                UIHelper.text('avg: ${stats.avgHeight}', color: Colors.white,),
-                UIHelper.text('std: ${stats.heightSD}', color: Colors.white,),
+                UIUtils.text('holes: ${stats.holes}'),
+                UIUtils.text('min: ${stats.minHeight}'),
+                UIUtils.text('max: ${stats.maxHeight}'),
+                UIUtils.text('avg: ${stats.avgHeight}'),
+                UIUtils.text('std: ${stats.heightSD}'),
               ],
             )
           ],
@@ -168,12 +169,7 @@ class ScoreTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return UIHelper.text(
-      text,
-      family: 'PixelMix',
-      size: 14,
-      color: Colors.white,
-    );
+    return UIUtils.text(text, size: 14);
   }
 }
 
@@ -185,12 +181,6 @@ class ScoreValue extends StatelessWidget {
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return UIHelper.text(
-      value.toString(),
-      family: 'PixelMix',
-      size: 32,
-      color: Colors.white,
-      bold: true,
-    );
+    return UIUtils.text(value.toString(), size: 32, bold: true);
   }
 }
