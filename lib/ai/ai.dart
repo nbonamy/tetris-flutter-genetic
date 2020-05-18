@@ -13,6 +13,8 @@ class Move {
 
 }
 
+typedef MovePlaying(bool finalOp);
+
 abstract class Pajitnov {
 
   Random random;
@@ -21,7 +23,7 @@ abstract class Pajitnov {
     random = new Random();
   }
 
-  void play(Game game, Function callback) {
+  void play(Game game, MovePlaying callback) {
 
     // we need moves
     List<Move> moves = _getAllMoves(game);
@@ -41,6 +43,9 @@ abstract class Pajitnov {
   }
 
   Move selectMove(Game game, List<Move> moves);
+
+  void onGameFinished(Game game) {}
+  String getInfo() { return null; }
 
   List<Move> _getAllMoves(Game game) {
 
@@ -70,7 +75,7 @@ abstract class Pajitnov {
 
   }
 
-  Game playMove(Game game, Move move, bool simulation, Function callback) {
+  Game playMove(Game game, Move move, bool simulation, MovePlaying callback) {
 
     // if not simulation play it directly
     if (simulation == false) {
@@ -85,13 +90,13 @@ abstract class Pajitnov {
 
   }
 
-  void _playMove(Game game, Move move, Function callback) {
+  void _playMove(Game game, Move move, MovePlaying callback) {
 
     // first rotate
     for (int r=0; r<move.rotations; r++) {
       game.rotate();
       if (callback != null) {
-        callback();
+        callback(false);
       }
     }
 
@@ -103,14 +108,16 @@ abstract class Pajitnov {
         game.moveRight();
       }
       if (callback != null) {
-        callback();
+        callback(false);
       }
     }
 
     // drop
     game.drop();
+
+    // done
     if (callback != null) {
-      callback();
+      callback(true);
     }
 
   }

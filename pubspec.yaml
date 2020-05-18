@@ -8,7 +8,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  darwin: ^0.4.1
   stanley: ^0.1.0
+  scidart: ^0.0.1-dev.6
   flutter_statusbarcolor: ^0.2.3
   assets_audio_player: ^1.4.7+2
 
