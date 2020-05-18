@@ -14,7 +14,7 @@ class GameScreen extends StatefulWidget {
 
 class _GameScreenState extends State<GameScreen> {
 
-  static const double kAccelerationFactor = 2.0;
+  static const double kAccelerationFactor = 1.0;
 
   Game _game;
   bool _vertDragConsumed = false;

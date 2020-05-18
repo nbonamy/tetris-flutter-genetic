@@ -33,6 +33,7 @@ class BoardWidget extends StatelessWidget {
       child: CustomPaint(
         foregroundPainter: BlockPainter(
           blocks: game.getBoardState(true),
+          currentPiece: game.currentPiece,
           cellSize: cellSize,
         ),
       ),
