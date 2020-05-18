@@ -43,6 +43,14 @@ class _GameScreenState extends State<GameScreen> {
 
     Stats stats = Stats.from(game: _game);
 
+    // next piece
+    List<List<bool>> nextPieceBlocks = _game.nextPiece?.blocks;
+    List<List<Color>> nextPieceColors = List.generate(nextPieceBlocks.length, (j) {
+      return List.generate(nextPieceBlocks[j].length, (i) {
+        return nextPieceBlocks[j][i] == true ? _game.nextPiece.color : null;
+      });
+    });
+
     return Scaffold(
       body: Decorator(
         paddingTop: 48,
@@ -52,10 +60,24 @@ class _GameScreenState extends State<GameScreen> {
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Score(title: 'LEVEL', value: _game.currentLevel),
                 Score(title: 'SCORE', value: _game.score),
                 Score(title: 'LINES', value: _game.linesCompleted),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ScoreTitle(text: 'NEXT'),
+                    SizedBox(height: 16,),
+                    CustomPaint(
+                      foregroundPainter: BlockPainter(
+                        blocks: nextPieceColors,
+                        cellSize: 10,
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
             SizedBox(

@@ -31,6 +31,7 @@ class Game {
 
   Board _board;
   bool _finished;
+  Piece _nextPiece;
   Piece _currentPiece;
   List<List<Color>> _boardState;
   Random _random;
@@ -50,6 +51,10 @@ class Game {
     this._boardState = List.generate(this._board.height, (_) {
       return List.generate(this._board.width, (_) => null);
     });
+
+    // get two pieces
+    _currentPiece = _newPiece();
+    _nextPiece = _newPiece();
 
   }
 
@@ -79,6 +84,14 @@ class Game {
 
   Board get board {
     return this._board;
+  }
+
+  Piece get currentPiece {
+    return _currentPiece;
+  }
+
+  Piece get nextPiece {
+    return _nextPiece;
   }
 
   bool tick() {
@@ -117,7 +130,8 @@ class Game {
 
     // do we need a piece
     if (_finished == false && _currentPiece == null) {
-      _currentPiece = _addPiece();
+      _currentPiece = _nextPiece;
+      _nextPiece = _newPiece();
       while (_checkCollision(_currentPiece, 0, 0)) {
         _currentPiece.y--;
         _finished = true;
@@ -172,6 +186,14 @@ class Game {
     // done
     return true;
 
+  }
+
+  void drop() {
+    while (true) {
+      if (tick() || this._finished) {
+        break;
+      }
+    }
   }
 
   bool _checkCollision(Piece piece, int deltaX, int deltaY) {
@@ -277,10 +299,6 @@ class Game {
 
   }
 
-  Piece get currentPiece {
-    return _currentPiece;
-  }
-
   void _addPieceToState(List<List<Color>> state, Piece piece) {
 
     // place each block
@@ -298,7 +316,7 @@ class Game {
 
   }
 
-  Piece _addPiece() {
+  Piece _newPiece() {
     Piece piece = this._randomPiece();
     piece.x = ((this._board.width - piece.width) / 2).floor();
     _incCount();
