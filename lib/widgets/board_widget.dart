@@ -38,7 +38,7 @@ class BoardWidget extends StatelessWidget {
           borderLeft: borderSize,
           borderRight: borderSize,
           borderBottom: borderSize,
-          borderColor: Colors.red,
+          borderColor: Colors.white,
           child: CustomPaint(
             foregroundPainter: BlockPainter(
               blocks: game.getBoardState(true),

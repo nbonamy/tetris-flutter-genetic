@@ -1,13 +1,12 @@
+import 'package:tetris/model/tetrominos/i.dart';
+import 'package:tetris/model/tetrominos/j.dart';
+import 'package:tetris/model/tetrominos/l.dart';
+import 'package:tetris/model/tetrominos/o.dart';
+import 'package:tetris/model/tetrominos/s.dart';
+import 'package:tetris/model/tetrominos/t.dart';
+import 'package:tetris/model/tetrominos/z.dart';
 
-enum TetrominoType {
-  o,
-  i,
-  t,
-  s,
-  z,
-  j,
-  l
-}
+enum TetrominoType { o, i, t, s, z, j, l }
 
 enum Rotation {
   Normal,
@@ -17,41 +16,91 @@ enum Rotation {
 }
 
 abstract class Tetromino {
-
   int x;
   int y;
-  Rotation _rotation;
+  Rotation rotation;
 
   Tetromino({
     this.x = 0,
     this.y = 0,
-  }) {
-    this._rotation = Rotation.Normal;
+    this.rotation = Rotation.Normal,
+  });
+
+  static List<Tetromino> all() {
+    return [
+      TetrominoO(),
+      TetrominoI(),
+      TetrominoT(),
+      TetrominoS(),
+      TetrominoZ(),
+      TetrominoJ(),
+      TetrominoL(),
+    ];
   }
 
   TetrominoType get type;
   int get width;
   int get height;
 
+  Tetromino clone() {
+    Tetromino clone;
+    switch (this.type) {
+      case TetrominoType.o:
+        clone = TetrominoO();
+        break;
+      case TetrominoType.i:
+        clone = TetrominoI();
+        break;
+      case TetrominoType.t:
+        clone = TetrominoT();
+        break;
+      case TetrominoType.s:
+        clone = TetrominoS();
+        break;
+      case TetrominoType.z:
+        clone = TetrominoZ();
+        break;
+      case TetrominoType.j:
+        clone = TetrominoJ();
+        break;
+      case TetrominoType.l:
+        clone = TetrominoL();
+        break;
+      default:
+        return null;
+        break;
+    }
+
+    // check
+    if (clone == null) {
+      return clone;
+    }
+
+    // copy
+    clone.x = this.x;
+    clone.y = this.y;
+    clone.rotation = this.rotation;
+
+    // done
+    return clone;
+  }
+
   List<List<TetrominoType>> get blocks;
 
-  Rotation get rotation => _rotation;
-
-  set rotation(Rotation rot) {
-    this._rotation = rot;
-  }
-
-  static Rotation rotateCW(Rotation rotation) {
-    switch (rotation) {
+  void rotate() {
+    switch (this.rotation) {
       case Rotation.Normal:
-        return Rotation.ThreeOClock;
+        this.rotation = Rotation.ThreeOClock;
+        break;
       case Rotation.ThreeOClock:
-        return Rotation.SixOClock;
+        this.rotation = Rotation.SixOClock;
+        break;
       case Rotation.SixOClock:
-        return Rotation.NineOClock;
-      default:
-        return Rotation.Normal;
+        this.rotation = Rotation.NineOClock;
+        break;
+      case Rotation.NineOClock:
+        this.rotation = Rotation.Normal;
+        break;
     }
   }
-
 }

@@ -1,7 +1,11 @@
+
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:stanley/stanley.dart';
+import 'package:tetris/ai/ai.dart';
+import 'package:tetris/ai/dumb.dart';
+import 'package:tetris/ai/force.dart';
 
 import 'package:tetris/model/game.dart';
 import 'package:tetris/model/stats.dart';
@@ -16,22 +20,23 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
-
-  static const double kAccelerationFactor = 1.0;
+  static const int kTickAiDuration = 100;
 
   Game _game;
   bool _vertDragConsumed = false;
   double _horizDragDelta = 0;
   AssetsAudioPlayer _assetsAudioPlayer;
+  Pajitnov _ai;
 
   @override
   void initState() {
     super.initState();
+    _ai = new BruteForce();
     _assetsAudioPlayer = AssetsAudioPlayer();
     _assetsAudioPlayer.loop = true;
     _assetsAudioPlayer.open(
       Audio('assets/sounds/theme.mp3'),
-      volume: 0,
+      volume: 0.5,
     );
     this.reset();
   }
@@ -73,7 +78,9 @@ class _GameScreenState extends State<GameScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ScoreTitle(text: 'NEXT'),
-                    SizedBox(height: 16,),
+                    SizedBox(
+                      height: 16,
+                    ),
                     CustomPaint(
                       foregroundPainter: BlockPainter(
                         blocks: nextTetrominoColors,
@@ -130,7 +137,9 @@ class _GameScreenState extends State<GameScreen> {
                 }
               },
             ),
-            SizedBox(height: 16,),
+            SizedBox(
+              height: 16,
+            ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -153,10 +162,29 @@ class _GameScreenState extends State<GameScreen> {
       _vertDragConsumed = true;
     }
     setState(() {
-      if (setTimer && _game.isFinished == false) {
-        Future.delayed(Duration(milliseconds: (_game.delay/kAccelerationFactor).floor()), () {
-          _tick(true);
+      if (_game.isFinished == false) {
+
+        // let ai play
+        if (_ai != null) {
+          _ai.play(_game, () {
+            //setState(() {});
+            //sleep(Duration(milliseconds: 50));
+          });
+        }
+
+        // set next timer
+        if (setTimer) {
+          Future.delayed(Duration(milliseconds: _ai == null ? _game.delay : kTickAiDuration), () {
+            _tick(true);
+          });
+        }
+
+      } else if (_ai != null) {
+
+        Future.delayed(Duration(milliseconds: 500), () {
+          //this.reset();
         });
+
       }
     });
   }

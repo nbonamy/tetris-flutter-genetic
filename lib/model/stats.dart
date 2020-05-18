@@ -15,13 +15,13 @@ class Stats {
   int get numHoles => _holes;
   int get minHeight => _minHeight;
   int get maxHeight => _maxHeight;
+  int get heightDiff => _maxHeight - _minHeight;
   double get avgHeight => _avgHeight;
   double get heightSD => _heightSD;
 
   Stats.from({
     @required Game game,
   }) {
-
     // based on
     List<List<TetrominoType>> state = game.getBoardState(false);
 

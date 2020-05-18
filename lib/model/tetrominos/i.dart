@@ -30,13 +30,13 @@ class TetrominoI extends Tetromino {
   }
 
   @override
-  set rotation(Rotation rot) {
+  void rotate() {
     if (this.rotation == Rotation.Normal || this.rotation == Rotation.SixOClock) {
       this.x++;
     } else {
       this.x--;
     }
-    super.rotation = rot;
+    super.rotate();
   }
 
 }

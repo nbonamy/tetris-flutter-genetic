@@ -25,19 +25,19 @@ class UIUtils {
     switch (type) {
 
       case TetrominoType.o:
-        return Colors.blue;
-      case TetrominoType.i:
-        return Colors.red;
-      case TetrominoType.t:
-        return Colors.grey;
-      case TetrominoType.s:
-        return Colors.orange;
-      case TetrominoType.z:
-        return Colors.green;
-      case TetrominoType.j:
-        return Colors.pink;
-      case TetrominoType.l:
         return Colors.yellow;
+      case TetrominoType.i:
+        return Colors.cyan;
+      case TetrominoType.t:
+        return Colors.purple;
+      case TetrominoType.s:
+        return Colors.green;
+      case TetrominoType.z:
+        return Colors.red;
+      case TetrominoType.j:
+        return Colors.blue;
+      case TetrominoType.l:
+        return Colors.orange;
       default:
         return Colors.white;
     }
