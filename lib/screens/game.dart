@@ -1,3 +1,4 @@
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:stanley/stanley.dart';
@@ -18,10 +19,17 @@ class _GameScreenState extends State<GameScreen> {
   Game _game;
   bool _vertDragConsumed = false;
   double _horizDragDelta = 0;
+  AssetsAudioPlayer _assetsAudioPlayer;
 
   @override
   void initState() {
     super.initState();
+    _assetsAudioPlayer = AssetsAudioPlayer();
+    _assetsAudioPlayer.loop = true;
+    _assetsAudioPlayer.open(
+      Audio('assets/sounds/theme.mp3'),
+      volume: 0.25,
+    );
     this.reset();
   }
 
