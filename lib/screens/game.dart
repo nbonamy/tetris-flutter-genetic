@@ -5,6 +5,8 @@ import 'package:stanley/stanley.dart';
 
 import 'package:tetris/model/game.dart';
 import 'package:tetris/model/stats.dart';
+import 'package:tetris/utils/ui.dart';
+import 'package:tetris/widgets/block_painter.dart';
 import 'package:tetris/widgets/board_widget.dart';
 
 class GameScreen extends StatefulWidget {
@@ -107,7 +109,9 @@ class _GameScreenState extends State<GameScreen> {
                     setState(() {});
                     _vertDragConsumed = true;
                   } else if (details.delta.dy > 0) {
-                    _tick(false);
+                    _game.drop();
+                    setState(() {});
+                    _vertDragConsumed = true;
                   }
                 }
               },
