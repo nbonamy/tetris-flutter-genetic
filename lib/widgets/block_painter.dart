@@ -7,14 +7,22 @@ class BlockPainter extends CustomPainter {
   final List<List<Color>> blocks;
   final Piece currentPiece;
   final double cellSize;
+  final double spacing;
   BlockPainter({
-    this.blocks,
+    @required this.blocks,
     this.currentPiece,
-    this.cellSize,
+    @required this.cellSize,
+    this.spacing,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
+
+    // calc spacing
+    double _spacing = spacing;
+    if (_spacing == null) {
+      _spacing = cellSize / 25;
+    }
 
     // first draw each block
     for (int j=0; j<blocks.length; j++) {
@@ -23,10 +31,10 @@ class BlockPainter extends CustomPainter {
         if (row[i] != null) {
           Paint paint = new Paint()..color = row[i];
           Rect rect = new Rect.fromLTWH(
-            i * cellSize+1,
-            j * cellSize+1,
-            cellSize-2,
-            cellSize-2,
+            i * cellSize + _spacing,
+            j * cellSize + _spacing,
+            cellSize - 2 * _spacing,
+            cellSize - 2 * _spacing,
           );
 
           canvas.drawRect(rect, paint);
