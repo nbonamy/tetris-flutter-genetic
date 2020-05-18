@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:stanley/stanley.dart';
 
 import 'package:tetris/model/game.dart';
+import 'package:tetris/model/stats.dart';
 import 'package:tetris/widgets/board_widget.dart';
 
 class GameScreen extends StatefulWidget {
@@ -31,6 +32,9 @@ class _GameScreenState extends State<GameScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    Stats stats = Stats.from(game: _game);
+
     return Scaffold(
       body: Decorator(
         paddingTop: 64,
@@ -90,6 +94,15 @@ class _GameScreenState extends State<GameScreen> {
                 }
               },
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                UIHelper.text(stats.minHeight.toString(), color: Colors.white,),
+                UIHelper.text(stats.maxHeight.toString(), color: Colors.white,),
+                UIHelper.text(stats.avgHeight.toString(), color: Colors.white,),
+                UIHelper.text(stats.heightSD.toString(), color: Colors.white,),
+              ],
+            )
           ],
         ),
       ),
