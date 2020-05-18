@@ -13,8 +13,10 @@ import 'package:tetris/model/pieces/z.dart';
 
 class Game {
 
-  static const int kIncreaseLevelEvery = 20;
-  static const int kPieceMovePoint = 1;
+  static const double kInitialSpeed = 1000;
+  static const int kIncreaseLevelEvery = 25;
+  static const int kPieceMovedPoint = 1;
+  static const int kPieceDroppedPoint = 10;
   static const List<int> kLinesCompletedPoints = [
     100,
     250,
@@ -72,7 +74,7 @@ class Game {
   }
 
   int get delay {
-    return 1100 - this._level * 100;
+    return (kInitialSpeed * 2 / (_level+1.0)).round();
   }
 
   Board get board {
@@ -98,13 +100,17 @@ class Game {
         _checkCompletedLines();
         _currentPiece = null;
 
+        // score
+        _score += kPieceDroppedPoint;
+
+
       } else {
 
         // simply move it down
         _currentPiece.y++;
 
-        // add one one point
-        _score += kPieceMovePoint;
+        // score
+        _score += kPieceMovedPoint;
 
       }
     }
@@ -239,8 +245,10 @@ class Game {
     }
 
     // update score
-    this._score += kLinesCompletedPoints[linesCompleted];
-    this._lines += linesCompleted;
+    if (linesCompleted > 0) {
+      this._score += kLinesCompletedPoints[linesCompleted-1];
+      this._lines += linesCompleted;
+    }
 
   }
 
@@ -267,6 +275,10 @@ class Game {
     // done
     return state;
 
+  }
+
+  Piece get currentPiece {
+    return _currentPiece;
   }
 
   void _addPieceToState(List<List<Color>> state, Piece piece) {
