@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:tetris/model/game.dart';
+import 'package:tetris/utils/number.dart';
 
 class Stats {
   int _holes;
@@ -61,13 +62,6 @@ class Stats {
     for (int height in heights) {
       sumDiff2 = pow(height - _avgHeight, 2);
     }
-    _heightSD = sqrt(sumDiff2 / heights.length).toPrecision(4);
-  }
-}
-
-extension Precision on double {
-  double toPrecision(int fractionDigits) {
-    double mod = pow(10, fractionDigits.toDouble());
-    return ((this * mod).round().toDouble() / mod);
+    _heightSD = NumberUtils.toPrecision(sqrt(sumDiff2 / heights.length), 4);
   }
 }
