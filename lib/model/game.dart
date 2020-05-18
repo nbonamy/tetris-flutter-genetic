@@ -160,7 +160,23 @@ class Game {
     }
   }
 
-  bool rotate() {
+  bool rotateCW() {
+
+    // we need a tetromino
+    if (_currentTetromino == null) {
+      return false;
+    }
+
+    // get rotation
+    Rotation rotation = _currentTetromino.rotation;
+    rotation = Tetromino.rotateCW(rotation);
+
+    // do it
+    return rotate(rotation);
+
+  }
+
+  bool rotate(Rotation rotation) {
 
     // we need a tetromino
     if (_currentTetromino == null) {
@@ -173,7 +189,7 @@ class Game {
     Rotation rot = _currentTetromino.rotation;
 
     // rotate
-    _currentTetromino.rotate();
+    _currentTetromino.rotation = rotation;
 
     // if collision restore
     if (_checkCollision(_currentTetromino, 0, 0)) {

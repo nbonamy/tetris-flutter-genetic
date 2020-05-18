@@ -22,13 +22,14 @@ abstract class Tetromino {
 
   int x;
   int y;
-  Rotation rotation;
+  Rotation _rotation;
 
   Tetromino({
     this.x = 0,
     this.y = 0,
-    this.rotation = Rotation.Normal,
-  });
+  }) {
+    this._rotation = Rotation.Normal;
+  }
 
   TetrominoType get type;
   Color get color;
@@ -37,20 +38,22 @@ abstract class Tetromino {
 
   List<List<TetrominoType>> get blocks;
 
-  void rotate() {
-    switch (this.rotation) {
+  Rotation get rotation => _rotation;
+
+  set rotation(Rotation rot) {
+    this._rotation = rot;
+  }
+
+  static Rotation rotateCW(Rotation rotation) {
+    switch (rotation) {
       case Rotation.Normal:
-        this.rotation = Rotation.ThreeOClock;
-        break;
+        return Rotation.ThreeOClock;
       case Rotation.ThreeOClock:
-        this.rotation = Rotation.SixOClock;
-        break;
+        return Rotation.SixOClock;
       case Rotation.SixOClock:
-        this.rotation = Rotation.NineOClock;
-        break;
-      case Rotation.NineOClock:
-        this.rotation = Rotation.Normal;
-        break;
+        return Rotation.NineOClock;
+      default:
+        return Rotation.Normal;
     }
   }
 
