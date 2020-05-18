@@ -220,7 +220,7 @@ class Game {
     }
   }
 
-  List<List<Color>> getBoardState() {
+  List<List<Color>> getBoardState(bool includeCurrentPiece) {
 
     // we send a clone anyways
     List<List<Color>> state = List.generate(_boardState.length, (j) {
@@ -230,7 +230,7 @@ class Game {
     });
 
     // add current piece if needed
-    if (_currentPiece != null) {
+    if (includeCurrentPiece == true && _currentPiece != null) {
       _addPieceToState(state, _currentPiece);
     }
 

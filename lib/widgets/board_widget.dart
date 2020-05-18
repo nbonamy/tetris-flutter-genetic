@@ -19,8 +19,8 @@ class BoardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    double width = MediaQuery.of(context).size.width * 0.8;
-    double height = MediaQuery.of(context).size.height * 0.8;
+    double width = MediaQuery.of(context).size.width * 0.6;
+    double height = MediaQuery.of(context).size.height * 0.6;
     double cellSize = min(width / game.board.width, height / game.board.height);
 
     return Decorator(
@@ -32,7 +32,7 @@ class BoardWidget extends StatelessWidget {
       borderColor: Colors.red,
       child: CustomPaint(
         foregroundPainter: BlockPainter(
-          blocks: game.getBoardState(),
+          blocks: game.getBoardState(true),
           cellSize: cellSize,
         ),
       ),
