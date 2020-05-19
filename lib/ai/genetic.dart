@@ -10,7 +10,7 @@ import 'package:tetris/model/game.dart';
 class Genetic extends Pajitnov {
 
   static const int kMembersPerGeneration = 25;
-  static const int kRunsPerMember = 10;
+  static const int kRunsPerMember = 5;
 
   GeneticAlgorithm _algorithm;
   Generation _firstGeneration;
@@ -50,15 +50,8 @@ class Genetic extends Pajitnov {
         _breeder,
       );
 
-      // listen
-      _algorithm.onGenerationEvaluated.listen((gen) {
-        print('BEST = ${gen.best.genes}');
-      });
-
       // run
       _algorithm.runUntilDone();
-      //_isolate = await FlutterIsolate.spawn(_run, 0);
-      //compute(_run, _algorithm);
 
     }
   }
@@ -88,6 +81,5 @@ class Genetic extends Pajitnov {
     return 'gen: $gen\nind: $ind\nlast: $lastScore\nbest: $maxScore\never: $bestScore';
 
   }
-
 
 }

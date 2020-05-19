@@ -3,7 +3,6 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:tetris/ai/ai.dart';
-import 'package:tetris/ai/dumb.dart';
 import 'package:tetris/ai/force.dart';
 import 'package:tetris/ai/genetic.dart';
 import 'package:tetris/model/game.dart';
