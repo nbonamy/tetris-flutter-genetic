@@ -1,14 +1,17 @@
 
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:tetris/ai/ai.dart';
 import 'package:tetris/ai/dumb.dart';
 import 'package:tetris/ai/force.dart';
+import 'package:tetris/ai/genetic.dart';
 import 'package:tetris/model/game.dart';
 
 abstract class TetrisUI {
   void currentPieceDone();
   void stateUpdateNeeded();
-  void restartGame();
+  void setCurrentGame(Game game);
 }
 
 abstract class Player {
@@ -21,7 +24,12 @@ abstract class Player {
 
   bool get autoRestart;
   bool get userCanInteract;
-  void startGame(Game game);
+
+  void startGame() {
+    _game = Game();
+    ui.setCurrentGame(_game);
+  }
+
   void gameEnded();
 
   String getInfo();
@@ -38,12 +46,12 @@ class RealPlayer extends Player {
   bool get autoRestart => false;
 
   @override
-  bool get userCanInteract => false;
+  bool get userCanInteract => true;
 
   @override
-  void startGame(Game game) {
-    this._game = game;
-    this._tick();
+  void startGame() {
+    super.startGame();
+    _tick();
   }
 
   @override
@@ -98,31 +106,92 @@ class AiPlayer extends Player {
   bool get userCanInteract => false;
 
   @override
-  void startGame(Game game) {
+  void startGame() {
+    super.startGame();
+    _play();
+  }
 
-    _ai.play(game, (bool finalOp) {
+  void _play() {
+
+    _ai.play(_game, (bool finalOp) {
 
       // refresh
       ui.stateUpdateNeeded();
 
       if (finalOp) {
 
-        if (game.isFinished) {
+        if (_game.isFinished) {
 
           // callback
-          _ai.onGameFinished(game);
+          _ai.onGameFinished(_game);
 
-          // auto restart
+          // start game again
           Future.delayed(Duration(milliseconds: 500), () {
-            ui.restartGame();
+            startGame();
           });
 
         } else {
 
           // continue
-          Future.delayed(Duration(milliseconds: 100), () {
-            startGame(game);
+          Future.delayed(Duration(milliseconds: 5), () {
+            _play();
           });
+
+        }
+
+      }
+
+    });
+
+  }
+
+  @override
+  void gameEnded() {
+  }
+
+  @override
+  String getInfo() {
+    return _ai.getInfo();
+  }
+
+}
+
+class GeneticPlayer extends AiPlayer {
+
+  Pajitnov _ai;
+
+  GeneticPlayer({
+    @required TetrisUI ui,
+  }) : super(ui: ui) {
+    _ai = Genetic();
+  }
+
+  @override
+  bool get autoRestart => false;
+
+  @override
+  bool get userCanInteract => false;
+
+  @override
+  void startGame() {
+    super.startGame();
+    _play();
+  }
+
+  void _play() {
+
+    _ai.play(_game, (bool finalOp) async {
+
+      // refresh
+      ui.stateUpdateNeeded();
+
+      if (finalOp) {
+
+        if (_game.isFinished) {
+
+          // callback
+          _ai.onGameFinished(_game);
+          startGame();
 
         }
 

@@ -28,20 +28,21 @@ class _GameScreenState extends State<GameScreen> implements TetrisUI {
   @override
   void initState() {
     super.initState();
-    _player = new AiPlayer(ui: this);
+    _player = new GeneticPlayer(ui: this);
     _assetsAudioPlayer = AssetsAudioPlayer();
     _assetsAudioPlayer.loop = true;
     _assetsAudioPlayer.open(
       Audio('assets/sounds/theme.mp3'),
       volume: 0.5,
     );
-    this.restartGame();
+    _player.startGame();
   }
 
   @override
-  restartGame() {
-    _game = Game();
-    _player.startGame(_game);
+  void setCurrentGame(Game game) {
+    setState(() {
+      _game = game;
+    });
   }
 
   @override
@@ -133,7 +134,7 @@ class _GameScreenState extends State<GameScreen> implements TetrisUI {
               onTap: () {
                 if (_game.isFinished) {
                   if (_player.autoRestart == false) {
-                    this.restartGame();
+                    _player.startGame();
                   }
                 } else if (_player.userCanInteract) {
                   _game.rotate();
@@ -145,20 +146,29 @@ class _GameScreenState extends State<GameScreen> implements TetrisUI {
               height: 16,
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    UIUtils.text('holes: ${stats.numHoles}'),
-                    UIUtils.text('min: ${stats.minHeight}'),
-                    UIUtils.text('max: ${stats.maxHeight}'),
-                    UIUtils.text('avg: ${stats.avgHeight}'),
-                    UIUtils.text('std: ${stats.heightSD}'),
-                  ],
+                Expanded(flex: 1, child: Container()),
+                Expanded(
+                  flex: 2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      UIUtils.text('holes: ${stats.numHoles}'),
+                      UIUtils.text('min: ${stats.minHeight}'),
+                      UIUtils.text('max: ${stats.maxHeight}'),
+                      UIUtils.text('avg: ${stats.avgHeight}'),
+                      UIUtils.text('std: ${stats.heightSD}'),
+                    ],
+                  ),
                 ),
-                UIUtils.text(_player.getInfo() ?? ''),
+                Expanded(flex: 1, child: Container()),
+                Expanded(
+                  flex: 2,
+                  child: UIUtils.text(_player.getInfo() ?? ''),
+                ),
+                Expanded(flex: 1, child: Container()),
               ],
             ),
           ],

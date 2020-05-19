@@ -1,7 +1,6 @@
 
-import 'dart:math' as math;
+import 'dart:math';
 
-import 'package:scidart/numdart.dart';
 import 'package:tetris/ai/ai.dart';
 import 'package:tetris/model/game.dart';
 import 'package:tetris/model/stats.dart';
@@ -59,8 +58,9 @@ class BruteForce extends Pajitnov {
   }
 
   @override
-  void onGameFinished(Game game) {
+   void onGameFinished(Game game) {
     _linesCount.add(game.linesCompleted);
+    super.onGameFinished(game);
   }
 
   @override
@@ -72,14 +72,14 @@ class BruteForce extends Pajitnov {
     }
 
     // get some values
-    int lastValue = _linesCount.last;
-    int worstValue = _linesCount.reduce(math.min);
-    int bestValue = _linesCount.reduce(math.max);
-    double avgValue = NumberUtils.toPrecision(_linesCount.reduce((a, b) => a + b) / _linesCount.length, 2);
-    double medianValue = median(Array(List.generate(_linesCount.length, (i) => _linesCount[i].toDouble())));
+    int numScores = _linesCount.length;
+    int lastScore = _linesCount.last;
+    int worstScore = _linesCount.reduce(min);
+    int bestScore = _linesCount.reduce(max);
+    double avgScore = NumberUtils.toPrecision(_linesCount.reduce((a, b) => a + b) / _linesCount.length, 2);
 
     // done
-    return 'last: $lastValue\nhigh: $bestValue\n low: $worstValue\n avg: $avgValue\n med: $medianValue';
+    return ' cnt: $numScores\nlast: $lastScore\nhigh: $bestScore\n low: $worstScore\n avg: $avgScore';
 
   }
 

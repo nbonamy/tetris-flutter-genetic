@@ -45,15 +45,19 @@ abstract class Pajitnov {
   Move selectMove(Game game, List<Move> moves);
 
   void onGameFinished(Game game) {}
+
   String getInfo() { return null; }
 
   List<Move> _getAllMoves(Game game) {
 
     // get the current tetromino
-    Tetromino tetromino = game.currentTetromino.clone();
+    Tetromino tetromino = game.currentTetromino;
     if (tetromino == null) {
       return null;
     }
+
+    // clone it
+    tetromino = tetromino.clone();
 
     // generate all
     List<Move> moves = List();
