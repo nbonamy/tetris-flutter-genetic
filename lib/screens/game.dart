@@ -55,12 +55,15 @@ class _GameScreenState extends State<GameScreen> implements TetrisUI {
     }
 
     // next tetromino
-    List<List<TetrominoType>> nextTetrominoBlocks = _game.nextTetromino?.blocks;
-    List<List<TetrominoType>> nextTetrominoColors = List.generate(nextTetrominoBlocks.length, (j) {
-      return List.generate(nextTetrominoBlocks[j].length, (i) {
-        return nextTetrominoBlocks[j][i] != null ? _game.nextTetromino.type : null;
+    List<List<TetrominoType>> nextTetrominoColors;
+    if (_player.userCanInteract) {
+      List<List<TetrominoType>> nextTetrominoBlocks = _game.nextTetromino?.blocks;
+      List<List<TetrominoType>> nextTetrominoColors = List.generate(nextTetrominoBlocks.length, (j) {
+        return List.generate(nextTetrominoBlocks[j].length, (i) {
+          return nextTetrominoBlocks[j][i] != null ? _game.nextTetromino.type : null;
+        });
       });
-    });
+    }
 
     return Scaffold(
       body: Decorator(
@@ -74,6 +77,7 @@ class _GameScreenState extends State<GameScreen> implements TetrisUI {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Score(title: 'LEVEL', value: _game.currentLevel),
+                Score(title: 'LINES', value: _game.linesCompleted),
                 _player.userCanInteract
                     ? Score(
                         title: 'SCORE',
@@ -83,8 +87,7 @@ class _GameScreenState extends State<GameScreen> implements TetrisUI {
                         title: 'PIECES',
                         value: _game.tetrominos,
                       ),
-                Score(title: 'LINES', value: _game.linesCompleted),
-                Column(
+                nextTetrominoColors == null ? null : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ScoreTitle(text: 'NEXT'),
@@ -99,7 +102,7 @@ class _GameScreenState extends State<GameScreen> implements TetrisUI {
                     ),
                   ],
                 ),
-              ],
+              ].where((w) => w != null).toList(),
             ),
             SizedBox(
               height: 24,
@@ -166,7 +169,7 @@ class _GameScreenState extends State<GameScreen> implements TetrisUI {
                       UIUtils.monoText('max: ${stats.maxHeight}'),
                       UIUtils.monoText('avg: ${stats.avgHeight}'),
                       UIUtils.monoText('std: ${stats.heightSD}'),
-                      UIUtils.monoText('l/t: $linesToPieces'),
+                      UIUtils.monoText(' l/t: $linesToPieces'),
                     ],
                   ),
                 ),

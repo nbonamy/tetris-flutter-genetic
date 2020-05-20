@@ -43,7 +43,7 @@ class BoardWidget extends StatelessWidget {
           borderColor: Colors.white,
           child: CustomPaint(
             foregroundPainter: BlockPainter(
-              blocks: game.getBoardState(true),
+              blocks: game.getBoardState(drawGuidelines),
               currentTetromino: drawGuidelines ? game.currentTetromino : null,
               cellSize: cellSize,
             ),

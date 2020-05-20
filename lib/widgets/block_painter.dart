@@ -19,6 +19,11 @@ class BlockPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
 
+    // check
+    if (blocks == null) {
+      return;
+    }
+
     // calc spacing
     double _spacing = spacing;
     if (_spacing == null) {

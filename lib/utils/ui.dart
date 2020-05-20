@@ -27,6 +27,8 @@ class UIUtils {
     bool bold,
   }) {
 
+    return UIUtils.text(text, size: size, bold: bold);
+
     List<Widget> rows = List();
     List<String> lines = text.split('\n');
     for (String line in lines) {
@@ -34,6 +36,7 @@ class UIUtils {
       for (int i=0; i<line.length; i++) {
         widgets.add(
           Decorator(
+            paddingVert: 2,
             width: (size ?? 14) * 0.85,
             alignment: Alignment.center,
             child: UIUtils.text(line.substring(i, i+1), align: TextAlign.center, size: size, bold: bold,),
