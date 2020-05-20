@@ -5,14 +5,17 @@ import 'package:tetris/model/game.dart';
 import 'package:tetris/model/tetromino.dart';
 import 'package:tetris/utils/number.dart';
 
-const String kStatsTotalHoles = 'totalHoles';
-const String kStatsConnectedHoles = 'connectedHoles';
 const String kStatsMinHeight = 'minHeight';
 const String kStatsMaxHeight = 'maxHeight';
 const String kStatsAvgHeight = 'avgHeight';
 const String kStatsTotalHeightDiff = 'totalHeightDiff';
 const String kStatsMaxHeightDiff = 'maxHeightDiff';
 const String kStatsHeightStdDev = 'stdHeight';
+const String kStatsTotalBlocks = 'totalBlocks';
+const String kStatsWeightedBlocks = 'weightedBlocks';
+const String kStatsTotalHoles = 'totalHoles';
+const String kStatsWeightedHoles = 'weightedHoles';
+const String kStatsConnectedHoles = 'connectedHoles';
 const String kStatsMaxWell = 'maxWell';
 const String kStatsSumWells = 'sumWells';
 
@@ -21,13 +24,16 @@ class Stats {
 
   Map _values;
 
-  num get totalHoles => _values[kStatsTotalHoles];
-  num get connectedHoles => _values[kStatsConnectedHoles];
   num get minHeight => _values[kStatsMinHeight];
   num get maxHeight => _values[kStatsMaxHeight];
   num get maxDiffHeight => _values[kStatsMaxHeightDiff];
   num get avgHeight => _values[kStatsAvgHeight];
   num get heightSD => _values[kStatsHeightStdDev];
+  num get totalBlocks => _values[kStatsTotalBlocks];
+  num get weightedBlocks => _values[kStatsWeightedBlocks];
+  num get totalHoles => _values[kStatsTotalHoles];
+  num get weightedHoles => _values[kStatsWeightedHoles];
+  num get connectedHoles => _values[kStatsConnectedHoles];
   num get maxWell => _values[kStatsMaxWell];
   num get sumWells => _values[kStatsSumWells];
 
@@ -49,17 +55,24 @@ class Stats {
     List<List<TetrominoType>> state = game.getBoardState(false);
 
     // holes
+    int totalBlocks = 0;
+    int weightedBlocks = 0;
     int totalHoles = 0;
+    int weightedHoles = 0;
     int connectedHoles = 0;
     for (int i = 0; i < game.board.width; i++) {
       bool topFound = false;
       bool blockFound = false;
       for (int j = 0; j < game.board.height; j++) {
+        int height = game.board.height - j;
         if (state[j][i] != null) {
           topFound = true;
           blockFound = true;
+          totalBlocks++;
+          weightedBlocks += height;
         } else if (topFound) {
           totalHoles++;
+          weightedHoles += height;
           if (blockFound) {
             connectedHoles++;
           }
@@ -69,7 +82,10 @@ class Stats {
     }
 
     // store
+    _values[kStatsTotalBlocks] = totalBlocks;
+    _values[kStatsWeightedBlocks] = weightedBlocks;
     _values[kStatsTotalHoles] = totalHoles;
+    _values[kStatsWeightedHoles] = weightedHoles;
     _values[kStatsConnectedHoles] = connectedHoles;
 
     // height of each column

@@ -171,7 +171,7 @@ class _GameScreenState extends State<GameScreen> implements TetrisUI {
                 ),
                 Expanded(flex: 1, child: Container()),
                 Expanded(
-                  flex: 3,
+                  flex: 4,
                   child: UIUtils.text(_player.getInfo() ?? ''),
                 ),
                 Expanded(flex: 1, child: Container()),

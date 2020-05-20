@@ -20,6 +20,9 @@ class Smart extends Pajitnov {
     kStatsMaxWell,            // 6
     kStatsSumWells,           // 7
     kStatsLastTetroHeight,    // 8
+    kStatsTotalBlocks,        // 9
+    kStatsWeightedBlocks,     // 10
+    kStatsWeightedHoles,
   ];
 
   final TetrisPhenotype phenotype;

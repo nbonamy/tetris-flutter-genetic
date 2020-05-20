@@ -9,7 +9,7 @@ import 'package:tetris/model/game.dart';
 
 class Genetic extends Pajitnov {
 
-  static const int kMembersPerGeneration = 25;
+  static const int kMembersPerGeneration = 50;
   static const int kRunsPerMember = 10;
 
   GeneticAlgorithm _algorithm;
@@ -30,6 +30,7 @@ class Genetic extends Pajitnov {
     // breeder
     _breeder = GenerationBreeder<TetrisPhenotype, double, SingleObjectiveResult>(
       () => TetrisPhenotype())
+      ..elitismCount = max(1, (kMembersPerGeneration * 0.05).round())
       ..crossoverPropability = 0.8;
 
     // init
@@ -80,6 +81,10 @@ class Genetic extends Pajitnov {
 
       });
 
+      // log
+      print('START = ${DateTime.now()}');
+      print('ELITE = ${_breeder.elitismCount}');
+
       // run
       _algorithm.runUntilDone();
 
@@ -88,7 +93,7 @@ class Genetic extends Pajitnov {
 
   @override
   void kill() {
-    print('CSV REPORT${_csvReport}');
+    print('CSV REPORT$_csvReport');
     _algorithm.MAX_EXPERIMENTS = 1;
     _evaluator.kill();
   }
