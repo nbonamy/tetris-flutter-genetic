@@ -34,4 +34,7 @@ flutter:
         - asset: assets/fonts/pixelmix.ttf
         - asset: assets/fonts/pixelmix_bold.ttf
           weight: 700
+    - family: Joystix
+      fonts:
+        - asset: assets/fonts/joystix.ttf
 
