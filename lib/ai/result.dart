@@ -17,8 +17,12 @@ class TetrisLinesResult extends FitnessResult {
   static int bestScoreEver = 0;
 
   double get value {
-    double totalLinesCompleted = scores.reduce((a, b) => a + b).toDouble();
-    return linesToFitness(totalLinesCompleted / scores.length);
+    if (scores.isEmpty) {
+      return 0;
+    } else {
+      double totalLinesCompleted = scores.reduce((a, b) => a + b).toDouble();
+      return linesToFitness(totalLinesCompleted / scores.length);
+    }
   }
 
   @override

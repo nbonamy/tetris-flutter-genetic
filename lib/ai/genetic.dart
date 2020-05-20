@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:darwin/darwin.dart';
 import 'package:tetris/ai/ai.dart';
 import 'package:tetris/ai/evaluator.dart';
+import 'package:tetris/ai/evaluator_mt.dart';
 import 'package:tetris/ai/phenotype.dart';
 import 'package:tetris/ai/result.dart';
 import 'package:tetris/model/game.dart';
@@ -18,6 +19,14 @@ class GeneticInfo {
   int bestScoreEver;
 }
 
+abstract class TetrisEvaluatorAbstract {
+  set game(Game _);
+  set callback(MovePlaying _);
+  List<int> get scores;
+  void gameFinished(Game game) {}
+  void kill() {}
+}
+
 class Genetic extends Pajitnov with MovePlayer {
 
   static const int kMembersPerGeneration = 25;
@@ -25,21 +34,21 @@ class Genetic extends Pajitnov with MovePlayer {
 
   GeneticAlgorithm _algorithm;
   Generation _firstGeneration;
-  TetrisEvaluator _evaluator;
+  TetrisEvaluatorAbstract _evaluator;
   GenerationBreeder _breeder;
 
   String _csvReport;
 
   PrintFunction printf = print;
 
-  Genetic() {
+  Genetic(bool multithread) {
 
     // init 1st generation
     _firstGeneration = Generation<TetrisPhenotype, double, TetrisLinesResult>()
       ..members.addAll(List.generate(kMembersPerGeneration, (i) => TetrisPhenotype.random(i)));
 
     // evaluator
-    _evaluator = TetrisEvaluator();
+    _evaluator = multithread ? TetrisEvaluatorMT() : TetrisEvaluator();
 
     // breeder
     _breeder = GenerationBreeder<TetrisPhenotype, double, TetrisLinesResult>(
@@ -56,8 +65,8 @@ class Genetic extends Pajitnov with MovePlayer {
   void play(Game game, MovePlaying callback) async {
 
     // record for evaluator
-    //_evaluator.game = game;
-    //_evaluator.callback = callback;
+    _evaluator.game = game;
+    _evaluator.callback = callback;
 
     // we need to do this only once
     if (_algorithm == null) {
@@ -65,7 +74,7 @@ class Genetic extends Pajitnov with MovePlayer {
       // create
       _algorithm = GeneticAlgorithm<TetrisPhenotype, double, TetrisLinesResult>(
         _firstGeneration,
-        _evaluator,
+        _evaluator as PhenotypeEvaluator,
         _breeder,
         printf: (_) {},
         statusf: (_) {},
@@ -80,14 +89,14 @@ class Genetic extends Pajitnov with MovePlayer {
         }
 
         // print our own status
-        print('\n');
-        print('Generation #${_algorithm.currentGeneration}');
-        print('  - AVG ALL = ${TetrisLinesResult.fitnessToLines(gen.averageFitness)}');
-        print('  - AVG BEST = ${TetrisLinesResult.fitnessToLines(gen.bestFitness)}');
-        print('  - BEST GEN = ${TetrisLinesResult.bestScoreGeneration}');
-        print('  - BEST EVER = ${TetrisLinesResult.bestScoreEver}');
-        print('  - ELITE = ${gen.best.genes}');
-        print('\n');
+        printf('\n');
+        printf('Generation #${_algorithm.currentGeneration}');
+        printf('  - AVG ALL = ${TetrisLinesResult.fitnessToLines(gen.averageFitness)}');
+        printf('  - AVG BEST = ${TetrisLinesResult.fitnessToLines(gen.bestFitness)}');
+        printf('  - BEST GEN = ${TetrisLinesResult.bestScoreGeneration}');
+        printf('  - BEST EVER = ${TetrisLinesResult.bestScoreEver}');
+        printf('  - ELITE = ${gen.best.genes}');
+        printf('\n');
 
         // csv
         _csvReport += '${_algorithm.currentGeneration},${TetrisLinesResult.fitnessToLines(gen.averageFitness)},${TetrisLinesResult.fitnessToLines(gen.bestFitness)},${TetrisLinesResult.bestScoreGeneration},${TetrisLinesResult.bestScoreEver}\n';
@@ -111,7 +120,7 @@ class Genetic extends Pajitnov with MovePlayer {
   void kill() {
     print('CSV REPORT$_csvReport');
     _algorithm.MAX_EXPERIMENTS = 1;
-    //_evaluator.kill();
+    _evaluator.kill();
   }
 
   @override
@@ -121,7 +130,7 @@ class Genetic extends Pajitnov with MovePlayer {
 
   @override
   void onGameFinished(Game game) {
-    //_evaluator.gameFinished(game);
+    _evaluator.gameFinished(game);
     super.onGameFinished(game);
   }
 
@@ -135,7 +144,7 @@ class Genetic extends Pajitnov with MovePlayer {
     }
 
     // done
-    return ' gen: ${info.currGeneration ?? '-'}\n ind: ${info.currIndividual ?? '-'}\n exp: ${info.currExperiment+1}\nlast: ${info.lastScoreInd ?? '-'}\n★ind: ${info.bestScoreInd ?? '-'}\n★gen: ${info.bestScoreGen ?? '-'}\n★evr: ${info.bestScoreEver ?? '-'}';
+    return ' gen: ${info.currGeneration ?? '-'}\n ind: ${info.currIndividual ?? '-'}\n exp: ${info.currExperiment+1}\nlast: ${info.lastScoreInd ?? '-'}\n+ind: ${info.bestScoreInd ?? '-'}\n+gen: ${info.bestScoreGen ?? '-'}\n+evr: ${info.bestScoreEver ?? '-'}';
 
   }
 
@@ -150,9 +159,9 @@ class Genetic extends Pajitnov with MovePlayer {
     GeneticInfo info = GeneticInfo();
     info.currGeneration = (_algorithm.currentGeneration ?? -1) + 1;
     info.currIndividual = (_algorithm.memberIndex ?? - 1) + 1;
-    //info.currExperiment = _evaluator.scores.length;
-    //info.lastScoreInd =  _evaluator.scores.isEmpty ? null : _evaluator.scores.last;
-    //info.bestScoreInd = _evaluator.scores.isEmpty ? null : _evaluator.scores.reduce(max);
+    info.currExperiment = _evaluator.scores?.length ?? 0;
+    info.lastScoreInd =  _evaluator.scores.isEmpty ? null : _evaluator.scores.last;
+    info.bestScoreInd = _evaluator.scores.isEmpty ? null : _evaluator.scores.reduce(max);
     info.bestScoreGen = TetrisLinesResult.bestScoreGeneration;
     info.bestScoreEver = TetrisLinesResult.bestScoreEver;
     return info;

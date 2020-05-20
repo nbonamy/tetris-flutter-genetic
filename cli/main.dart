@@ -53,11 +53,10 @@ void main() {
 
   // console
   Console.init();
-  Console.writeANSI('\33c\e[3J');
 
   // init
   ConsoleUI console = ConsoleUI();
-  GeneticPlayer player = GeneticPlayer(ui: console, print: false,);
+  GeneticPlayer player = GeneticPlayer(ui: console, multithread: true,);
   console.player = player;
 
   // catch Ctrl-C
@@ -68,7 +67,6 @@ void main() {
   });
 
   // now run
-  print('START = ${DateTime.now()}');
   player.startGame();
 
 }

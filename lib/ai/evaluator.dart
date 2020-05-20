@@ -1,79 +1,58 @@
+import 'package:darwin/darwin.dart';
 
-import 'dart:io';
-import 'dart:math';
-
-import 'package:darwin/isolate_worker.dart';
-import 'package:darwin/src/evaluator_multithreaded.dart';
 import 'package:tetris/ai/ai.dart';
 import 'package:tetris/ai/genetic.dart';
 import 'package:tetris/ai/phenotype.dart';
 import 'package:tetris/ai/result.dart';
+
 import 'package:tetris/ai/smart.dart';
 import 'package:tetris/model/game.dart';
 
-class TetrisEvaluator extends MultithreadedPhenotypeSerialEvaluator<TetrisPhenotype, double, TetrisLinesResult> {
+class TetrisEvaluator extends PhenotypeEvaluator<TetrisPhenotype, double, TetrisLinesResult> implements TetrisEvaluatorAbstract {
 
+  Game game;
+  bool _cancel = false;
   MovePlaying callback;
-
-  TetrisEvaluator() : super((TetrisPhenotype phenotype, int index) {
-
-    // need to run
-    if (index < Genetic.kRunsPerMember) {
-      return new TetrisTask(phenotype: phenotype);
-    }
-
-    // last run
-    return new TetrisTask();
-
-  }, tetrisLinesResultCombinator, TetrisLinesResult());
+  List<int> scores = List();
 
   @override
   Future<TetrisLinesResult> evaluate(TetrisPhenotype phenotype) async {
+    // reset
+    scores.clear();
 
-    // normal
-    TetrisLinesResult result = await super.evaluate(phenotype);
-
-    // some reporting
-    int maxLinesCompleted = result.scores.reduce(max);
-    double avgLinesCompleted = result.scores.reduce((a, b) => a + b).toDouble() / result.scores.length;
-    print(' Best = ${maxLinesCompleted.toString().padLeft(8)}, Average = ${avgLinesCompleted.toStringAsFixed(2)}');
-
-    // done
-    return result;
-  }
-
-}
-
-class TetrisTask extends IsolateTask<TetrisPhenotype, TetrisLinesResult> {
-
-  final TetrisPhenotype phenotype;
-  TetrisTask({
-    this.phenotype,
-  });
-
-  @override
-  TetrisLinesResult execute() {
-
-    // check
-    if (phenotype == null) {
-      return null;
-    }
-
-    // init
-    stdout.write('.');
+    // run 10 games
     Smart ai = Smart(phenotype: phenotype);
-
-    // run game
-    Game game = Game();
     while (true) {
-      ai.play(game, null);
-      if (game.isFinished) {
+      await Future.delayed(Duration(milliseconds: 10), () {
+        ai.play(game, callback);
+      });
+      if (scores.length == Genetic.kRunsPerMember) {
+        break;
+      }
+      if (_cancel) {
         final result = TetrisLinesResult();
-        result.scores.add(game.linesCompleted);
-        return result;
+        return Future.value(result);
       }
     }
 
+    // return inverse of average as algorithm take the lowest
+    final result = TetrisLinesResult();
+    result.scores.addAll(scores);
+    return Future.value(result);
   }
 
+  void gameFinished(Game game) {
+    scores.add(game.linesCompleted);
+    if (game.linesCompleted > TetrisLinesResult.bestScoreEver) {
+      //print('NEW BEST! ${game.linesCompleted} with ${_phenotype.genes}');
+      TetrisLinesResult.bestScoreEver = game.linesCompleted;
+    }
+    if (game.linesCompleted > TetrisLinesResult.bestScoreGeneration) {
+      TetrisLinesResult.bestScoreGeneration = game.linesCompleted;
+    }
+  }
+
+  void kill() {
+    _cancel = true;
+  }
 }
