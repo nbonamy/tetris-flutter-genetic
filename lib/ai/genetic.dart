@@ -10,7 +10,7 @@ import 'package:tetris/model/game.dart';
 class Genetic extends Pajitnov {
 
   static const int kMembersPerGeneration = 25;
-  static const int kRunsPerMember = 5;
+  static const int kRunsPerMember = 10;
 
   GeneticAlgorithm _algorithm;
   Generation _firstGeneration;
@@ -21,7 +21,7 @@ class Genetic extends Pajitnov {
 
     // init 1st generation
     _firstGeneration = Generation<TetrisPhenotype, double, SingleObjectiveResult>()
-      ..members.addAll(List.generate(kMembersPerGeneration, (_) => TetrisPhenotype.random()));
+      ..members.addAll(List.generate(kMembersPerGeneration, (i) => TetrisPhenotype.random(i)));
 
     // evaluator
     _evaluator = TetrisEvaluator();
@@ -57,6 +57,12 @@ class Genetic extends Pajitnov {
   }
 
   @override
+  void kill() {
+    _algorithm.MAX_EXPERIMENTS = 1;
+    _evaluator.kill();
+  }
+
+  @override
   Move selectMove(Game game, List<Move> moves) {
     return null;
   }
@@ -71,14 +77,15 @@ class Genetic extends Pajitnov {
   String getInfo() {
 
     // get value
-    int gen = _algorithm.currentGeneration+1;
-    int ind = _algorithm.currentExperiment - (gen-1) * kMembersPerGeneration + 1;
-    String lastScore = _evaluator.scores.isEmpty ? '' : _evaluator.scores.last.toString();
-    String maxScore = _evaluator.scores.isEmpty ? '' : _evaluator.scores.reduce(max).toString();
+    int generation = (_algorithm.currentGeneration ?? -1) + 1;
+    int member = (_algorithm.memberIndex ?? - 1) + 1;
+    int experiment = _evaluator.scores.length + 1;
+    String lastScore = _evaluator.scores.isEmpty ? '-' : _evaluator.scores.last.toString();
+    String maxScore = _evaluator.scores.isEmpty ? '-' : _evaluator.scores.reduce(max).toString();
     int bestScore = _evaluator.bestScore;
 
     // done
-    return 'gen: $gen\nind: $ind\nlast: $lastScore\nbest: $maxScore\never: $bestScore';
+    return ' gen: $generation\n ind: $member\n exp: $experiment\nlast: $lastScore\nbest: $maxScore\never: $bestScore';
 
   }
 

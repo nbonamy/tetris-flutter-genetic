@@ -9,8 +9,9 @@ import 'package:tetris/model/game.dart';
 class TetrisEvaluator extends PhenotypeEvaluator<TetrisPhenotype, double, SingleObjectiveResult> {
 
   Game game;
-  TetrisPhenotype _phenotype;
+  bool _cancel = false;
   MovePlaying callback;
+  TetrisPhenotype _phenotype;
   List<int> scores = List();
   int bestScore = 0;
 
@@ -24,11 +25,14 @@ class TetrisEvaluator extends PhenotypeEvaluator<TetrisPhenotype, double, Single
     // run 10 games
     Smart ai = Smart(phenotype: phenotype);
     while (true) {
-      await Future.delayed(Duration(milliseconds: 5), () {
+      await Future.delayed(Duration(milliseconds: 10), () {
         ai.play(game, callback);
       });
       if (scores.length == Genetic.kRunsPerMember) {
         break;
+      }
+      if (_cancel) {
+        return null;
       }
     }
 
@@ -44,6 +48,10 @@ class TetrisEvaluator extends PhenotypeEvaluator<TetrisPhenotype, double, Single
       print('BEST SO FAR : ${game.linesCompleted} with ${_phenotype.genes}');
       bestScore = game.linesCompleted;
     }
+  }
+
+  void kill() {
+    _cancel = true;
   }
 
 }

@@ -26,12 +26,23 @@ abstract class Player {
 
   void startGame() {
     _game = Game();
-    ui.setCurrentGame(_game);
+    ui?.setCurrentGame(_game);
   }
 
   void gameEnded();
 
   String getInfo();
+
+  void onBoardTap() {
+    if (_game.isFinished) {
+      if (autoRestart == false) {
+        startGame();
+      }
+    } else if (userCanInteract) {
+      _game.rotate();
+      ui?.stateUpdateNeeded();
+    }
+  }
 
 }
 
@@ -66,13 +77,11 @@ class RealPlayer extends Player {
 
     // tick: true means current piece is done
     if (_game.tick()) {
-      if (ui != null) {
-        ui.currentPieceDone();
-      }
+      ui?.currentPieceDone();
     }
 
     // refesh ui
-    ui.stateUpdateNeeded();
+    ui?.stateUpdateNeeded();
 
     // continue?
     if (_game.isFinished == false) {
@@ -115,7 +124,7 @@ class AiPlayer extends Player {
     _ai.play(_game, (bool finalOp) {
 
       // refresh
-      ui.stateUpdateNeeded();
+      ui?.stateUpdateNeeded();
 
       if (finalOp) {
 
@@ -182,7 +191,7 @@ class GeneticPlayer extends AiPlayer {
     _ai.play(_game, (bool finalOp) async {
 
       // refresh
-      ui.stateUpdateNeeded();
+      ui?.stateUpdateNeeded();
 
       if (finalOp) {
 
@@ -207,6 +216,11 @@ class GeneticPlayer extends AiPlayer {
   @override
   String getInfo() {
     return _ai.getInfo();
+  }
+
+  @override
+  void onBoardTap() {
+    _ai.kill();
   }
 
 }

@@ -42,6 +42,10 @@ abstract class Pajitnov {
 
   }
 
+  void kill() {
+
+  }
+
   Move selectMove(Game game, List<Move> moves);
 
   void onGameFinished(Game game) {}

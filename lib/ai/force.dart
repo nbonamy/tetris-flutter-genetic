@@ -37,7 +37,7 @@ class BruteForce extends Pajitnov {
         if (stats.numHoles < bestHoles) {
           best = true;
         } else if (stats.numHoles == bestHoles) {
-          if (stats.heightDiff <= bestDiffHeight) {
+          if (stats.maxDiffHeight <= bestDiffHeight) {
             best = true;
           }
         }
@@ -46,7 +46,7 @@ class BruteForce extends Pajitnov {
       // select
       if (best) {
         bestHoles = stats.numHoles;
-        bestDiffHeight = stats.heightDiff;
+        bestDiffHeight = stats.maxDiffHeight;
         bestLines = linesCompleted;
         bestMove = move;
       }

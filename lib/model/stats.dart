@@ -9,13 +9,14 @@ class Stats {
   int _holes;
   int _minHeight;
   int _maxHeight;
+  int _maxDiffHeight;
   double _avgHeight;
   double _heightSD;
 
   int get numHoles => _holes;
   int get minHeight => _minHeight;
   int get maxHeight => _maxHeight;
-  int get heightDiff => _maxHeight - _minHeight;
+  int get maxDiffHeight => _maxDiffHeight;
   double get avgHeight => _avgHeight;
   double get heightSD => _heightSD;
 
@@ -58,6 +59,15 @@ class Stats {
     _minHeight = heights.reduce(min);
     _maxHeight = heights.reduce(max);
     _avgHeight = heights.reduce((a, b) => a + b) / heights.length;
+
+    // calc max diff
+    _maxDiffHeight = 0;
+    for (int i=1; i<heights.length; i++) {
+      int diff = (heights[i]-heights[i-1]).abs();
+      if (diff > _maxDiffHeight) {
+        _maxDiffHeight = diff;
+      }
+    }
 
     // now cald sd
     double sumDiff2 = 0;

@@ -6,6 +6,7 @@ import 'package:stanley/stanley.dart';
 import 'package:tetris/model/game.dart';
 import 'package:tetris/model/stats.dart';
 import 'package:tetris/model/tetromino.dart';
+import 'package:tetris/utils/number.dart';
 import 'package:tetris/utils/player.dart';
 import 'package:tetris/utils/ui.dart';
 import 'package:tetris/widgets/block_painter.dart';
@@ -31,10 +32,10 @@ class _GameScreenState extends State<GameScreen> implements TetrisUI {
     _player = new GeneticPlayer(ui: this);
     _assetsAudioPlayer = AssetsAudioPlayer();
     _assetsAudioPlayer.loop = true;
-    _assetsAudioPlayer.open(
+    /*_assetsAudioPlayer.open(
       Audio('assets/sounds/theme.mp3'),
       volume: 0.5,
-    );
+    );*/
     _player.startGame();
   }
 
@@ -50,6 +51,10 @@ class _GameScreenState extends State<GameScreen> implements TetrisUI {
 
     // calc stats
     Stats stats = Stats.from(game: _game);
+    String linesToPieces = '-';
+    if (_game.linesCompleted > 0) {
+      linesToPieces = NumberUtils.toPrecision(_game.tetrominos/_game.linesCompleted, 2).toString();
+    }
 
     // next tetromino
     List<List<TetrominoType>> nextTetrominoBlocks = _game.nextTetromino?.blocks;
@@ -71,7 +76,9 @@ class _GameScreenState extends State<GameScreen> implements TetrisUI {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Score(title: 'LEVEL', value: _game.currentLevel),
-                Score(title: 'SCORE', value: _game.score),
+                _player.userCanInteract
+                  ? Score(title: 'SCORE', value: _game.score)
+                  : Score(title: 'PIECES', value: _game.tetrominos),
                 Score(title: 'LINES', value: _game.linesCompleted),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -132,14 +139,7 @@ class _GameScreenState extends State<GameScreen> implements TetrisUI {
                 game: _game,
               ),
               onTap: () {
-                if (_game.isFinished) {
-                  if (_player.autoRestart == false) {
-                    _player.startGame();
-                  }
-                } else if (_player.userCanInteract) {
-                  _game.rotate();
-                  setState(() {});
-                }
+                _player.onBoardTap();
               },
             ),
             SizedBox(
@@ -160,6 +160,7 @@ class _GameScreenState extends State<GameScreen> implements TetrisUI {
                       UIUtils.text('max: ${stats.maxHeight}'),
                       UIUtils.text('avg: ${stats.avgHeight}'),
                       UIUtils.text('std: ${stats.heightSD}'),
+                      UIUtils.text('l/t: $linesToPieces'),
                     ],
                   ),
                 ),

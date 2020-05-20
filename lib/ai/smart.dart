@@ -6,7 +6,7 @@ import 'package:tetris/model/stats.dart';
 
 class Smart extends Pajitnov {
 
-  static const int kGenesCount = 6;
+  static const int kGenesCount = 5;
 
   final TetrisPhenotype phenotype;
   Smart({
@@ -21,26 +21,27 @@ class Smart extends Pajitnov {
     double bestScore;
 
     // test each move
-    moves.shuffle();
+    //moves.shuffle();
     for (Move move in moves) {
 
       // play
-      int initialLines = game.linesCompleted;
+      //int initialLines = game.linesCompleted;
       Game result = playMove(game, move, true, null);
       Stats stats = Stats.from(game: result);
-      int linesCompleted = result.linesCompleted - initialLines;
+      //int linesCompleted = result.linesCompleted - initialLines;
 
       // calc score
+      int i = 0;
       double score =
-        phenotype.genes[0] * linesCompleted +
-        phenotype.genes[1] * stats.numHoles +
-        phenotype.genes[2] * stats.minHeight +
-        phenotype.genes[3] * stats.maxHeight +
-        phenotype.genes[4] * stats.heightDiff +
-        phenotype.genes[5] * stats.heightSD;
+        //phenotype.genes[i++] * linesCompleted +
+        phenotype.genes[i++] * stats.numHoles +
+        phenotype.genes[i++] * stats.avgHeight +
+        phenotype.genes[i++] * stats.maxHeight +
+        phenotype.genes[i++] * stats.maxDiffHeight +
+        phenotype.genes[i++] * stats.heightSD;
 
       // best
-      if (bestScore == null || score > bestScore) {
+      if (bestScore == null || score < bestScore) {
         bestMove = move;
         bestScore = score;
       }
