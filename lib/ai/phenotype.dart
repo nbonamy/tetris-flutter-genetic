@@ -2,9 +2,10 @@
 import 'dart:math';
 
 import 'package:darwin/darwin.dart';
+import 'package:tetris/ai/result.dart';
 import 'package:tetris/ai/smart.dart';
 
-class TetrisPhenotype extends Phenotype<double, SingleObjectiveResult> {
+class TetrisPhenotype extends Phenotype<double, TetrisLinesResult> {
 
   Random _random = Random();
 

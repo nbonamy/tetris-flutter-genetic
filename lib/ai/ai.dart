@@ -47,6 +47,7 @@ abstract class Pajitnov {
   }
 
   Move selectMove(Game game, List<Move> moves);
+  Game playMove(Game game, Move move, bool simulation, MovePlaying callback);
 
   void onGameFinished(Game game) {}
 
@@ -82,6 +83,10 @@ abstract class Pajitnov {
     return moves;
 
   }
+
+}
+
+mixin MovePlayer {
 
   Game playMove(Game game, Move move, bool simulation, MovePlaying callback) {
 

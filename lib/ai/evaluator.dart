@@ -1,72 +1,79 @@
 
-import 'package:darwin/darwin.dart';
+import 'dart:io';
+import 'dart:math';
+
+import 'package:darwin/isolate_worker.dart';
+import 'package:darwin/src/evaluator_multithreaded.dart';
 import 'package:tetris/ai/ai.dart';
 import 'package:tetris/ai/genetic.dart';
 import 'package:tetris/ai/phenotype.dart';
+import 'package:tetris/ai/result.dart';
 import 'package:tetris/ai/smart.dart';
 import 'package:tetris/model/game.dart';
 
-class TetrisEvaluator extends PhenotypeEvaluator<TetrisPhenotype, double, SingleObjectiveResult> {
+class TetrisEvaluator extends MultithreadedPhenotypeSerialEvaluator<TetrisPhenotype, double, TetrisLinesResult> {
 
-  Game game;
-  bool _cancel = false;
   MovePlaying callback;
-  TetrisPhenotype _phenotype;
-  List<int> scores = List();
-  int bestScoreGeneration = 0;
-  int bestScoreEver = 0;
 
-  static double linesToFitness(double lines) {
-    return 1000.0 / (1.0 + lines);
-  }
+  TetrisEvaluator() : super((TetrisPhenotype phenotype, int index) {
 
-  static int fitnessToLines(double fitness) {
-    return (1000.0 / fitness).round() - 1;
-  }
+    // need to run
+    if (index < Genetic.kRunsPerMember) {
+      return new TetrisTask(phenotype: phenotype);
+    }
+
+    // last run
+    return new TetrisTask();
+
+  }, tetrisLinesResultCombinator, TetrisLinesResult());
 
   @override
-  Future<SingleObjectiveResult> evaluate(TetrisPhenotype phenotype) async {
+  Future<TetrisLinesResult> evaluate(TetrisPhenotype phenotype) async {
 
-    // reset
-    scores.clear();
-    _phenotype = phenotype;
+    // normal
+    TetrisLinesResult result = await super.evaluate(phenotype);
 
-    // run 10 games
-    Smart ai = Smart(phenotype: phenotype);
-    while (true) {
-      await Future.delayed(Duration(milliseconds: 10), () {
-        ai.play(game, callback);
-      });
-      if (scores.length == Genetic.kRunsPerMember) {
-        break;
-      }
-      if (_cancel) {
-        final result = SingleObjectiveResult();
-        result.value = 0;
-        return Future.value(result);
-      }
-    }
+    // some reporting
+    int maxLinesCompleted = result.scores.reduce(max);
+    double avgLinesCompleted = result.scores.reduce((a, b) => a + b).toDouble() / result.scores.length;
+    print(' Best = ${maxLinesCompleted.toString().padLeft(8)}, Average = ${avgLinesCompleted.toStringAsFixed(2)}');
 
-    // return inverse of average as algorithm take the lowest
-    final result = SingleObjectiveResult();
-    result.value = TetrisEvaluator.linesToFitness(scores.reduce((a, b) => a + b).toDouble() / scores.length);
-    return Future.value(result);
-  }
-
-  void gameFinished(Game game) {
-    scores.add(game.linesCompleted);
-    if (game.linesCompleted > bestScoreEver) {
-      //print('NEW BEST! ${game.linesCompleted} with ${_phenotype.genes}');
-      bestScoreEver = game.linesCompleted;
-    }
-    if (game.linesCompleted > bestScoreGeneration) {
-      bestScoreGeneration = game.linesCompleted;
-    }
-  }
-
-  void kill() {
-    _cancel = true;
+    // done
+    return result;
   }
 
 }
 
+class TetrisTask extends IsolateTask<TetrisPhenotype, TetrisLinesResult> {
+
+  final TetrisPhenotype phenotype;
+  TetrisTask({
+    this.phenotype,
+  });
+
+  @override
+  TetrisLinesResult execute() {
+
+    // check
+    if (phenotype == null) {
+      return null;
+    }
+
+    // init
+    stdout.write('.');
+    Smart ai = Smart(phenotype: phenotype);
+
+    // run game
+    Game game = Game();
+    while (true) {
+      ai.play(game, null);
+      if (game.isFinished) {
+        final result = TetrisLinesResult();
+        result.scores.add(game.linesCompleted);
+        return result;
+      }
+    }
+
+  }
+
+}
