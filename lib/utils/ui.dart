@@ -27,9 +27,10 @@ class UIUtils {
     bool bold,
   }) {
 
+    // this is too slow. disabling.
     return UIUtils.text(text, size: size, bold: bold);
 
-    List<Widget> rows = List();
+    /*List<Widget> rows = List();
     List<String> lines = text.split('\n');
     for (String line in lines) {
       List<Widget> widgets = List();
@@ -45,7 +46,7 @@ class UIUtils {
       }
       rows.add(Row(children: widgets,));
     }
-    return Column(children: rows,);
+    return Column(children: rows,);*/
   }
 
   static Color tetrominoColor(TetrominoType type) {

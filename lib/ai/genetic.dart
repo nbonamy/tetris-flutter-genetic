@@ -29,7 +29,7 @@ abstract class TetrisEvaluatorAbstract {
 
 class Genetic extends Pajitnov with MovePlayer {
 
-  static const int kMembersPerGeneration = 25;
+  static const int kMembersPerGeneration = 50;
   static const int kRunsPerMember = 10;
 
   GeneticAlgorithm _algorithm;

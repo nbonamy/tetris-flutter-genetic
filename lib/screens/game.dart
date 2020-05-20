@@ -58,7 +58,7 @@ class _GameScreenState extends State<GameScreen> implements TetrisUI {
     List<List<TetrominoType>> nextTetrominoColors;
     if (_player.userCanInteract) {
       List<List<TetrominoType>> nextTetrominoBlocks = _game.nextTetromino?.blocks;
-      List<List<TetrominoType>> nextTetrominoColors = List.generate(nextTetrominoBlocks.length, (j) {
+      nextTetrominoColors = List.generate(nextTetrominoBlocks.length, (j) {
         return List.generate(nextTetrominoBlocks[j].length, (i) {
           return nextTetrominoBlocks[j][i] != null ? _game.nextTetromino.type : null;
         });

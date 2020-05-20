@@ -5,11 +5,11 @@ import 'package:darwin/darwin.dart';
 class TetrisLinesResult extends FitnessResult {
 
   static double linesToFitness(double lines) {
-    return 1000.0 / (1.0 + lines);
+    return -lines;//1000.0 / (1.0 + lines);
   }
 
   static int fitnessToLines(double fitness) {
-    return (1000.0 / fitness).round() - 1;
+    return -fitness.toInt();//(1000.0 / fitness).round() - 1;
   }
 
   List<int> scores = List();

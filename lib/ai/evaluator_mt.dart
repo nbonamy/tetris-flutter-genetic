@@ -23,7 +23,10 @@ class TetrisEvaluatorMT extends MultithreadedPhenotypeSerialEvaluator<TetrisPhen
 
     // need to run
     if (index < Genetic.kRunsPerMember) {
-      return new TetrisTask(phenotype: phenotype);
+      return new TetrisTask(
+        index: index,
+        phenotype: phenotype,
+      );
     }
 
     // last run
@@ -50,8 +53,10 @@ class TetrisEvaluatorMT extends MultithreadedPhenotypeSerialEvaluator<TetrisPhen
 
 class TetrisTask extends IsolateTask<TetrisPhenotype, TetrisLinesResult> {
 
+  final int index;
   final TetrisPhenotype phenotype;
   TetrisTask({
+    this.index,
     this.phenotype,
   });
 
