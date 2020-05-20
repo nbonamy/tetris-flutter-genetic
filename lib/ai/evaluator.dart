@@ -13,7 +13,16 @@ class TetrisEvaluator extends PhenotypeEvaluator<TetrisPhenotype, double, Single
   MovePlaying callback;
   TetrisPhenotype _phenotype;
   List<int> scores = List();
-  int bestScore = 0;
+  int bestScoreGeneration = 0;
+  int bestScoreEver = 0;
+
+  static double linesToFitness(double lines) {
+    return 1000.0 / (1.0 + lines);
+  }
+
+  static int fitnessToLines(double fitness) {
+    return (1000.0 / fitness).round() - 1;
+  }
 
   @override
   Future<SingleObjectiveResult> evaluate(TetrisPhenotype phenotype) async {
@@ -32,21 +41,26 @@ class TetrisEvaluator extends PhenotypeEvaluator<TetrisPhenotype, double, Single
         break;
       }
       if (_cancel) {
-        return null;
+        final result = SingleObjectiveResult();
+        result.value = 0;
+        return Future.value(result);
       }
     }
 
     // return inverse of average as algorithm take the lowest
     final result = SingleObjectiveResult();
-    result.value = 1000.0 / (1.0 + scores.reduce((a, b) => a + b).toDouble() / scores.length);
+    result.value = TetrisEvaluator.linesToFitness(scores.reduce((a, b) => a + b).toDouble() / scores.length);
     return Future.value(result);
   }
 
   void gameFinished(Game game) {
     scores.add(game.linesCompleted);
-    if (game.linesCompleted > bestScore) {
-      print('BEST SO FAR : ${game.linesCompleted} with ${_phenotype.genes}');
-      bestScore = game.linesCompleted;
+    if (game.linesCompleted > bestScoreEver) {
+      print('NEW BEST! ${game.linesCompleted} with ${_phenotype.genes}');
+      bestScoreEver = game.linesCompleted;
+    }
+    if (game.linesCompleted > bestScoreGeneration) {
+      bestScoreGeneration = game.linesCompleted;
     }
   }
 

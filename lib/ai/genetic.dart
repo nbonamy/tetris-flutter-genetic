@@ -16,6 +16,7 @@ class Genetic extends Pajitnov {
   Generation _firstGeneration;
   TetrisEvaluator _evaluator;
   GenerationBreeder _breeder;
+  String _csvReport;
 
   Genetic() {
 
@@ -30,6 +31,9 @@ class Genetic extends Pajitnov {
     _breeder = GenerationBreeder<TetrisPhenotype, double, SingleObjectiveResult>(
       () => TetrisPhenotype())
       ..crossoverPropability = 0.8;
+
+    // init
+    _csvReport = '\n';
 
   }
 
@@ -48,7 +52,33 @@ class Genetic extends Pajitnov {
         _firstGeneration,
         _evaluator,
         _breeder,
+        printf: (_) {},
+        statusf: (_) {},
       );
+
+      // report
+      _algorithm.onGenerationEvaluated.listen((gen) {
+
+        // aborted
+        if (_algorithm.MAX_EXPERIMENTS == 1) {
+          return;
+        }
+
+        // print our own status
+        print('Generation #${_algorithm.currentGeneration}');
+        print('  - AVG ALL = ${TetrisEvaluator.fitnessToLines(gen.averageFitness)}');
+        print('  - AVG BEST = ${TetrisEvaluator.fitnessToLines(gen.bestFitness)}');
+        print('  - BEST GEN = ${_evaluator.bestScoreGeneration}');
+        print('  - BEST EVER = ${_evaluator.bestScoreEver}');
+        print('  - ELITE = ${gen.best.genes}');
+
+        // csv
+        _csvReport += '${_algorithm.currentGeneration},${TetrisEvaluator.fitnessToLines(gen.averageFitness)},${TetrisEvaluator.fitnessToLines(gen.bestFitness)},${_evaluator.bestScoreGeneration},${_evaluator.bestScoreEver}\n';
+
+        // reset
+        _evaluator.bestScoreGeneration = 0;
+
+      });
 
       // run
       _algorithm.runUntilDone();
@@ -58,6 +88,7 @@ class Genetic extends Pajitnov {
 
   @override
   void kill() {
+    print('CSV REPORT${_csvReport}');
     _algorithm.MAX_EXPERIMENTS = 1;
     _evaluator.kill();
   }
@@ -82,10 +113,11 @@ class Genetic extends Pajitnov {
     int experiment = _evaluator.scores.length + 1;
     String lastScore = _evaluator.scores.isEmpty ? '-' : _evaluator.scores.last.toString();
     String maxScore = _evaluator.scores.isEmpty ? '-' : _evaluator.scores.reduce(max).toString();
-    int bestScore = _evaluator.bestScore;
+    int bestGeneration = _evaluator.bestScoreGeneration;
+    int bestEver = _evaluator.bestScoreEver;
 
     // done
-    return ' gen: $generation\n ind: $member\n exp: $experiment\nlast: $lastScore\nbest: $maxScore\never: $bestScore';
+    return ' gen: $generation\n ind: $member\n exp: $experiment\nlast: $lastScore\n★ind: $maxScore\n★gen: $bestGeneration\n★evr: $bestEver';
 
   }
 
