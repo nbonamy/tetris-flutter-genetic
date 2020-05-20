@@ -1,7 +1,4 @@
 
-import 'dart:async';
-
-import 'package:flutter/foundation.dart';
 import 'package:tetris/ai/ai.dart';
 import 'package:tetris/ai/force.dart';
 import 'package:tetris/ai/genetic.dart';
@@ -18,8 +15,10 @@ abstract class Player {
   Game _game;
   final TetrisUI ui;
   Player({
-    @required this.ui,
+    this.ui,
   });
+
+  Game get game => _game;
 
   bool get autoRestart;
   bool get userCanInteract;
@@ -49,7 +48,7 @@ abstract class Player {
 class RealPlayer extends Player {
 
   RealPlayer({
-    @required TetrisUI ui,
+    TetrisUI ui,
   }) : super(ui: ui);
 
   @override
@@ -102,7 +101,7 @@ class AiPlayer extends Player {
   Pajitnov _ai;
 
   AiPlayer({
-    @required TetrisUI ui,
+    TetrisUI ui,
   }) : super(ui: ui) {
     _ai = BruteForce();
   }
@@ -169,9 +168,13 @@ class GeneticPlayer extends AiPlayer {
   Pajitnov _ai;
 
   GeneticPlayer({
-    @required TetrisUI ui,
+    TetrisUI ui,
+    bool print = true,
   }) : super(ui: ui) {
     _ai = Genetic();
+    if (print == false) {
+      (_ai as Genetic).printf = (_) {};
+    }
   }
 
   @override
@@ -188,7 +191,7 @@ class GeneticPlayer extends AiPlayer {
 
   void _play() {
 
-    _ai.play(_game, (bool finalOp) async {
+    _ai.play(_game, (bool finalOp) {
 
       // refresh
       ui?.stateUpdateNeeded();
@@ -221,6 +224,10 @@ class GeneticPlayer extends AiPlayer {
   @override
   void onBoardTap() {
     _ai.kill();
+  }
+
+  GeneticInfo get geneticInfo {
+    return (_ai as Genetic).getGeneticInfo();
   }
 
 }

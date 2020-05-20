@@ -34,7 +34,7 @@ class TetrisEvaluator extends PhenotypeEvaluator<TetrisPhenotype, double, Single
     // run 10 games
     Smart ai = Smart(phenotype: phenotype);
     while (true) {
-      await Future.delayed(Duration(milliseconds: 5), () {
+      await Future.delayed(Duration(milliseconds: 10), () {
         ai.play(game, callback);
       });
       if (scores.length == Genetic.kRunsPerMember) {
@@ -56,7 +56,7 @@ class TetrisEvaluator extends PhenotypeEvaluator<TetrisPhenotype, double, Single
   void gameFinished(Game game) {
     scores.add(game.linesCompleted);
     if (game.linesCompleted > bestScoreEver) {
-      print('NEW BEST! ${game.linesCompleted} with ${_phenotype.genes}');
+      //print('NEW BEST! ${game.linesCompleted} with ${_phenotype.genes}');
       bestScoreEver = game.linesCompleted;
     }
     if (game.linesCompleted > bestScoreGeneration) {

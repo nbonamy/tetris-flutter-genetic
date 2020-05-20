@@ -1,6 +1,4 @@
 import 'dart:math';
-
-import 'package:flutter/foundation.dart';
 import 'package:tetris/model/game.dart';
 import 'package:tetris/model/tetromino.dart';
 import 'package:tetris/utils/number.dart';
@@ -46,7 +44,7 @@ class Stats {
   }
 
   Stats.from({
-    @required Game game,
+    Game game,
   }) {
     // init
     _values = Map();

@@ -7,16 +7,28 @@ import 'package:tetris/ai/evaluator.dart';
 import 'package:tetris/ai/phenotype.dart';
 import 'package:tetris/model/game.dart';
 
+class GeneticInfo {
+  int currGeneration;
+  int currIndividual;
+  int currExperiment;
+  int lastScoreInd;
+  int bestScoreInd;
+  int bestScoreGen;
+  int bestScoreEver;
+}
+
 class Genetic extends Pajitnov {
 
-  static const int kMembersPerGeneration = 50;
-  static const int kRunsPerMember = 10;
+  static const int kMembersPerGeneration = 5;
+  static const int kRunsPerMember = 5;
 
   GeneticAlgorithm _algorithm;
   Generation _firstGeneration;
   TetrisEvaluator _evaluator;
   GenerationBreeder _breeder;
   String _csvReport;
+
+  PrintFunction printf = print;
 
   Genetic() {
 
@@ -66,12 +78,12 @@ class Genetic extends Pajitnov {
         }
 
         // print our own status
-        print('Generation #${_algorithm.currentGeneration}');
-        print('  - AVG ALL = ${TetrisEvaluator.fitnessToLines(gen.averageFitness)}');
-        print('  - AVG BEST = ${TetrisEvaluator.fitnessToLines(gen.bestFitness)}');
-        print('  - BEST GEN = ${_evaluator.bestScoreGeneration}');
-        print('  - BEST EVER = ${_evaluator.bestScoreEver}');
-        print('  - ELITE = ${gen.best.genes}');
+        printf('Generation #${_algorithm.currentGeneration}');
+        printf('  - AVG ALL = ${TetrisEvaluator.fitnessToLines(gen.averageFitness)}');
+        printf('  - AVG BEST = ${TetrisEvaluator.fitnessToLines(gen.bestFitness)}');
+        printf('  - BEST GEN = ${_evaluator.bestScoreGeneration}');
+        printf('  - BEST EVER = ${_evaluator.bestScoreEver}');
+        printf('  - ELITE = ${gen.best.genes}');
 
         // csv
         _csvReport += '${_algorithm.currentGeneration},${TetrisEvaluator.fitnessToLines(gen.averageFitness)},${TetrisEvaluator.fitnessToLines(gen.bestFitness)},${_evaluator.bestScoreGeneration},${_evaluator.bestScoreEver}\n';
@@ -82,8 +94,8 @@ class Genetic extends Pajitnov {
       });
 
       // log
-      print('START = ${DateTime.now()}');
-      print('ELITE = ${_breeder.elitismCount}');
+      printf('START = ${DateTime.now()}');
+      printf('ELITE = ${_breeder.elitismCount}');
 
       // run
       _algorithm.runUntilDone();
@@ -112,17 +124,34 @@ class Genetic extends Pajitnov {
   @override
   String getInfo() {
 
-    // get value
-    int generation = (_algorithm.currentGeneration ?? -1) + 1;
-    int member = (_algorithm.memberIndex ?? - 1) + 1;
-    int experiment = _evaluator.scores.length + 1;
-    String lastScore = _evaluator.scores.isEmpty ? '-' : _evaluator.scores.last.toString();
-    String maxScore = _evaluator.scores.isEmpty ? '-' : _evaluator.scores.reduce(max).toString();
-    int bestGeneration = _evaluator.bestScoreGeneration;
-    int bestEver = _evaluator.bestScoreEver;
+    // check
+    GeneticInfo info = getGeneticInfo();
+    if (info == null) {
+      return '';
+    }
 
     // done
-    return ' gen: $generation\n ind: $member\n exp: $experiment\nlast: $lastScore\n★ind: $maxScore\n★gen: $bestGeneration\n★evr: $bestEver';
+    return ' gen: ${info.currGeneration ?? '-'}\n ind: ${info.currIndividual ?? '-'}\n exp: ${info.currExperiment+1}\nlast: ${info.lastScoreInd ?? '-'}\n★ind: ${info.bestScoreInd ?? '-'}\n★gen: ${info.bestScoreGen ?? '-'}\n★evr: ${info.bestScoreEver ?? '-'}';
+
+  }
+
+  GeneticInfo getGeneticInfo() {
+
+    // check
+    if (_algorithm == null) {
+      return null;
+    }
+
+    // build
+    GeneticInfo info = GeneticInfo();
+    info.currGeneration = (_algorithm.currentGeneration ?? -1) + 1;
+    info.currIndividual = (_algorithm.memberIndex ?? - 1) + 1;
+    info.currExperiment = _evaluator.scores.length;
+    info.lastScoreInd =  _evaluator.scores.isEmpty ? null : _evaluator.scores.last;
+    info.bestScoreInd = _evaluator.scores.isEmpty ? null : _evaluator.scores.reduce(max);
+    info.bestScoreGen = _evaluator.bestScoreGeneration;
+    info.bestScoreEver = _evaluator.bestScoreEver;
+    return info;
 
   }
 

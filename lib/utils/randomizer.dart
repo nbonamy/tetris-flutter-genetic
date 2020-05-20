@@ -1,5 +1,5 @@
-import 'dart:collection';
 import 'dart:math';
+import 'dart:collection';
 import 'package:tetris/model/tetromino.dart';
 
 class Randomizer {
