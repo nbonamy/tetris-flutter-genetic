@@ -64,7 +64,7 @@ class _GameScreenState extends State<GameScreen> implements TetrisUI {
 
     return Scaffold(
       body: Decorator(
-        paddingTop: 48,
+        paddingTop: 40,
         alignment: Alignment.topCenter,
         backgroundColor: Colors.black,
         child: Column(
@@ -102,7 +102,7 @@ class _GameScreenState extends State<GameScreen> implements TetrisUI {
               ],
             ),
             SizedBox(
-              height: 32,
+              height: 24,
             ),
             GestureDetector(
               onHorizontalDragUpdate: (DragUpdateDetails details) {
@@ -155,11 +155,12 @@ class _GameScreenState extends State<GameScreen> implements TetrisUI {
               children: [
                 Expanded(flex: 1, child: Container()),
                 Expanded(
-                  flex: 2,
+                  flex: 4,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      UIUtils.text('holes: ${stats.numHoles}'),
+                      UIUtils.text('hol: ${stats.totalHoles}/${stats.connectedHoles}'),
+                      UIUtils.text('wel: ${stats.maxWell}/${stats.sumWells}'),
                       UIUtils.text('min: ${stats.minHeight}'),
                       UIUtils.text('max: ${stats.maxHeight}'),
                       UIUtils.text('avg: ${stats.avgHeight}'),
@@ -170,7 +171,7 @@ class _GameScreenState extends State<GameScreen> implements TetrisUI {
                 ),
                 Expanded(flex: 1, child: Container()),
                 Expanded(
-                  flex: 2,
+                  flex: 3,
                   child: UIUtils.text(_player.getInfo() ?? ''),
                 ),
                 Expanded(flex: 1, child: Container()),

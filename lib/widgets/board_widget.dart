@@ -21,7 +21,7 @@ class BoardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
 
     double width = MediaQuery.of(context).size.width * 0.6;
-    double height = MediaQuery.of(context).size.height * 0.6;
+    double height = MediaQuery.of(context).size.height * 0.55;
     double cellSize = min(width / game.board.width, height / game.board.height);
 
     return Row(
