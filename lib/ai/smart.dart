@@ -8,7 +8,7 @@ import 'package:tetris/model/tetromino.dart';
 const kStatsLinesCompleted = 'linesCompleted';
 const kStatsLastTetroHeight = 'tetrominoHeight';
 
-class Smart extends Pajitnov {
+class Smart extends Pajitnov with MovePlayer {
 
   // https://pdfs.semanticscholar.org/b0fe/1ed14404db2eb1db6a777961440723d6e06f.pdf?_ga=2.183710566.1551116755.1589937221-487702206.1589937221
   static const List kFeatures = [

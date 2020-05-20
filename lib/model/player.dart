@@ -169,9 +169,10 @@ class GeneticPlayer extends AiPlayer {
 
   GeneticPlayer({
     TetrisUI ui,
+    bool multithread = false,
     bool print = true,
   }) : super(ui: ui) {
-    _ai = Genetic();
+    _ai = Genetic(multithread);
     if (print == false) {
       (_ai as Genetic).printf = (_) {};
     }

@@ -10,7 +10,7 @@ import 'package:tetris/model/player.dart';
 class ConsoleUI extends TetrisUI {
 
   GeneticPlayer player;
-  int _progress = 0;
+  //int _progress = 0;
 
   @override
   void currentPieceDone() {
@@ -25,20 +25,20 @@ class ConsoleUI extends TetrisUI {
     }
 
     // print it
-    Console.moveCursor(row: 1);
+    //Console.moveCursor(row: 1);
     print('|' + _pad(info.currGeneration) + ' |' + _pad(info.currIndividual) + ' |' + _pad(info.currExperiment) + ' |' + _pad(info.lastScoreInd) + ' |' + _pad(info.bestScoreInd) + ' |' + _pad(info.bestScoreGen) + ' |' + _pad(info.bestScoreEver) + ' |');
 
     // _reset
-    Console.moveCursor(row: 2, column: 1);
-    Console.eraseLine();
-    _progress = 0;
+    //Console.moveCursor(row: 2, column: 1);
+    //Console.eraseLine();
+    //_progress = 0;
 
   }
 
   @override
   void stateUpdateNeeded() {
-    Console.moveCursor(row: 2, column: ++_progress + 1);
-    stdout.write('.');
+    //Console.moveCursor(row: 2, column: ++_progress + 1);
+    //stdout.write('.');
   }
 
   String _pad(int value) {
@@ -53,11 +53,10 @@ void main() {
 
   // console
   Console.init();
-  Console.writeANSI('\33c\e[3J');
 
   // init
   ConsoleUI console = ConsoleUI();
-  GeneticPlayer player = GeneticPlayer(ui: console, print: false,);
+  GeneticPlayer player = GeneticPlayer(ui: console, multithread: true,);
   console.player = player;
 
   // catch Ctrl-C
@@ -68,7 +67,6 @@ void main() {
   });
 
   // now run
-  print('START = ${DateTime.now()}');
   player.startGame();
 
 }

@@ -6,7 +6,7 @@ import 'package:tetris/model/game.dart';
 import 'package:tetris/model/stats.dart';
 import 'package:tetris/utils/number.dart';
 
-class BruteForce extends Pajitnov {
+class BruteForce extends Pajitnov with MovePlayer {
 
   List<int> _linesCount = List();
 

@@ -160,20 +160,20 @@ class _GameScreenState extends State<GameScreen> implements TetrisUI {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      UIUtils.text('hol: ${stats.totalHoles}/${stats.connectedHoles}'),
-                      UIUtils.text('wel: ${stats.maxWell}/${stats.sumWells}'),
-                      UIUtils.text('min: ${stats.minHeight}'),
-                      UIUtils.text('max: ${stats.maxHeight}'),
-                      UIUtils.text('avg: ${stats.avgHeight}'),
-                      UIUtils.text('std: ${stats.heightSD}'),
-                      UIUtils.text('l/t: $linesToPieces'),
+                      UIUtils.monoText('hol: ${stats.totalHoles}/${stats.connectedHoles}'),
+                      UIUtils.monoText('wel: ${stats.maxWell}/${stats.sumWells}'),
+                      UIUtils.monoText('min: ${stats.minHeight}'),
+                      UIUtils.monoText('max: ${stats.maxHeight}'),
+                      UIUtils.monoText('avg: ${stats.avgHeight}'),
+                      UIUtils.monoText('std: ${stats.heightSD}'),
+                      UIUtils.monoText('l/t: $linesToPieces'),
                     ],
                   ),
                 ),
                 Expanded(flex: 1, child: Container()),
                 Expanded(
                   flex: 4,
-                  child: UIUtils.text(_player.getInfo() ?? ''),
+                  child: UIUtils.monoText(_player.getInfo() ?? ''),
                 ),
                 Expanded(flex: 1, child: Container()),
               ],
@@ -232,7 +232,7 @@ class ScoreTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return UIUtils.text(text, size: 14);
+    return UIUtils.monoText(text, size: 14);
   }
 }
 
@@ -244,6 +244,6 @@ class ScoreValue extends StatelessWidget {
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return UIUtils.text(value.toString(), size: 32, bold: true);
+    return UIUtils.monoText(value.toString(), size: 32, bold: true);
   }
 }
