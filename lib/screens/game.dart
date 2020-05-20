@@ -1,4 +1,3 @@
-
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -7,7 +6,7 @@ import 'package:tetris/model/game.dart';
 import 'package:tetris/model/stats.dart';
 import 'package:tetris/model/tetromino.dart';
 import 'package:tetris/utils/number.dart';
-import 'package:tetris/utils/player.dart';
+import 'package:tetris/model/player.dart';
 import 'package:tetris/utils/ui.dart';
 import 'package:tetris/widgets/block_painter.dart';
 import 'package:tetris/widgets/board_widget.dart';
@@ -48,12 +47,11 @@ class _GameScreenState extends State<GameScreen> implements TetrisUI {
 
   @override
   Widget build(BuildContext context) {
-
     // calc stats
     Stats stats = Stats.from(game: _game);
     String linesToPieces = '-';
     if (_game.linesCompleted > 0) {
-      linesToPieces = NumberUtils.toPrecision(_game.tetrominos/_game.linesCompleted, 2).toString();
+      linesToPieces = NumberUtils.toPrecision(_game.tetrominos / _game.linesCompleted, 2).toString();
     }
 
     // next tetromino
@@ -77,8 +75,14 @@ class _GameScreenState extends State<GameScreen> implements TetrisUI {
               children: [
                 Score(title: 'LEVEL', value: _game.currentLevel),
                 _player.userCanInteract
-                  ? Score(title: 'SCORE', value: _game.score)
-                  : Score(title: 'PIECES', value: _game.tetrominos),
+                    ? Score(
+                        title: 'SCORE',
+                        value: _game.score,
+                      )
+                    : Score(
+                        title: 'PIECES',
+                        value: _game.tetrominos,
+                      ),
                 Score(title: 'LINES', value: _game.linesCompleted),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -188,7 +192,6 @@ class _GameScreenState extends State<GameScreen> implements TetrisUI {
   void stateUpdateNeeded() {
     setState(() {});
   }
-
 }
 
 class Score extends StatelessWidget {
