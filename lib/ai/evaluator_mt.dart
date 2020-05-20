@@ -64,7 +64,6 @@ class TetrisTask extends IsolateTask<TetrisPhenotype, TetrisLinesResult> {
     }
 
     // init
-    stdout.write('•');
     Smart ai = Smart(phenotype: phenotype);
 
     // run game
@@ -72,6 +71,7 @@ class TetrisTask extends IsolateTask<TetrisPhenotype, TetrisLinesResult> {
     while (true) {
       ai.play(game, null);
       if (game.isFinished) {
+        stdout.write('•');
         final result = TetrisLinesResult();
         result.scores.add(game.linesCompleted);
         return result;
