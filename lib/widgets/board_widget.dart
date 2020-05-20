@@ -11,10 +11,12 @@ class BoardWidget extends StatelessWidget {
 
   final Game game;
   final double borderSize;
+  final bool drawGuidelines;
   const BoardWidget({
     Key key,
     this.game,
     this.borderSize = 4,
+    this.drawGuidelines = true,
   }) : super(key: key);
 
   @override
@@ -42,7 +44,7 @@ class BoardWidget extends StatelessWidget {
           child: CustomPaint(
             foregroundPainter: BlockPainter(
               blocks: game.getBoardState(true),
-              currentTetromino: game.currentTetromino,
+              currentTetromino: drawGuidelines ? game.currentTetromino : null,
               cellSize: cellSize,
             ),
           ),

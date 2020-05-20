@@ -141,6 +141,7 @@ class _GameScreenState extends State<GameScreen> implements TetrisUI {
               onVerticalDragCancel: () => _vertDragConsumed = false,
               child: BoardWidget(
                 game: _game,
+                drawGuidelines: _player.userCanInteract,
               ),
               onTap: () {
                 _player.onBoardTap();
