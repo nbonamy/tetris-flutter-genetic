@@ -4,9 +4,17 @@ import 'package:tetris/ai/phenotype.dart';
 import 'package:tetris/model/game.dart';
 import 'package:tetris/model/stats.dart';
 
+const kStatsLinesCompleted = 'linesCompleted';
+
 class Smart extends Pajitnov {
 
-  static const int kGenesCount = 5;
+  static const List kFeatures = [
+    kStatsCountHoles,
+    kStatsAvgHeight,
+    kStatsMaxHeight,
+    kStatsMaxHeightDiff,
+    kStatsHeightStdDev
+  ];
 
   final TetrisPhenotype phenotype;
   Smart({
@@ -25,20 +33,18 @@ class Smart extends Pajitnov {
     for (Move move in moves) {
 
       // play
-      //int initialLines = game.linesCompleted;
+      int initialLines = game.linesCompleted;
       Game result = playMove(game, move, true, null);
       Stats stats = Stats.from(game: result);
-      //int linesCompleted = result.linesCompleted - initialLines;
+
+      // lines completed
+      stats.setValue(kStatsLinesCompleted, result.linesCompleted - initialLines);
 
       // calc score
-      int i = 0;
-      double score =
-        //phenotype.genes[i++] * linesCompleted +
-        phenotype.genes[i++] * stats.numHoles +
-        phenotype.genes[i++] * stats.avgHeight +
-        phenotype.genes[i++] * stats.maxHeight +
-        phenotype.genes[i++] * stats.maxDiffHeight +
-        phenotype.genes[i++] * stats.heightSD;
+      double score = 0;
+      for (int i=0; i<kFeatures.length; i++) {
+        score += phenotype.genes[i] * stats.getValue(kFeatures[i]);
+      }
 
       // best
       if (bestScore == null || score < bestScore) {

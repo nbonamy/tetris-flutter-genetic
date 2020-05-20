@@ -21,7 +21,7 @@ class TetrisPhenotype extends Phenotype<double, SingleObjectiveResult> {
     if (index < _gattaca.length) {
       genes = _gattaca[index];
     } else {
-      genes = List.generate(Smart.kGenesCount, (_) => (_random.nextDouble()-0.5) * 10.0);
+      genes = List.generate(Smart.kFeatures.length, (_) => (_random.nextDouble()-0.5) * 10.0);
     }
   }
 

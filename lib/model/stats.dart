@@ -5,24 +5,41 @@ import 'package:tetris/model/game.dart';
 import 'package:tetris/model/tetromino.dart';
 import 'package:tetris/utils/number.dart';
 
-class Stats {
-  int _holes;
-  int _minHeight;
-  int _maxHeight;
-  int _maxDiffHeight;
-  double _avgHeight;
-  double _heightSD;
+const String kStatsCountHoles = 'countHoles';
+const String kStatsMinHeight = 'minHeight';
+const String kStatsMaxHeight = 'maxHeight';
+const String kStatsAvgHeight = 'avgHeight';
+const String kStatsMaxHeightDiff = 'maxHeightDiff';
+const String kStatsHeightStdDev = 'stdHeight';
 
-  int get numHoles => _holes;
-  int get minHeight => _minHeight;
-  int get maxHeight => _maxHeight;
-  int get maxDiffHeight => _maxDiffHeight;
-  double get avgHeight => _avgHeight;
-  double get heightSD => _heightSD;
+class Stats {
+
+  // https://pdfs.semanticscholar.org/b0fe/1ed14404db2eb1db6a777961440723d6e06f.pdf?_ga=2.183710566.1551116755.1589937221-487702206.1589937221
+
+  Map _values;
+
+  num get numHoles => _values[kStatsCountHoles];
+  num get minHeight => _values[kStatsMinHeight];
+  num get maxHeight => _values[kStatsMaxHeight];
+  num get maxDiffHeight => _values[kStatsMaxHeightDiff];
+  num get avgHeight => _values[kStatsAvgHeight];
+  num get heightSD => _values[kStatsHeightStdDev];
+
+  num getValue(String name) {
+    return _values[name];
+  }
+
+  setValue(String name, num value) {
+    _values[name] = value;
+  }
 
   Stats.from({
     @required Game game,
   }) {
+
+    // init
+    _values = Map();
+
     // based on
     List<List<TetrominoType>> state = game.getBoardState(false);
 
@@ -42,7 +59,7 @@ class Stats {
     }
 
     // calc holes
-    _holes = holes.reduce((a, b) => (a ?? 0) + (b ?? 0));
+    _values[kStatsCountHoles] = holes.reduce((a, b) => (a ?? 0) + (b ?? 0));
 
     // height of each column
     List<int> heights = List.generate(game.board.width, (_) => 0);
@@ -56,24 +73,24 @@ class Stats {
     }
 
     // now get
-    _minHeight = heights.reduce(min);
-    _maxHeight = heights.reduce(max);
-    _avgHeight = heights.reduce((a, b) => a + b) / heights.length;
+    _values[kStatsMinHeight] = heights.reduce(min);
+    _values[kStatsMaxHeight] = heights.reduce(max);
+    _values[kStatsAvgHeight] = heights.reduce((a, b) => a + b) / heights.length;
 
     // calc max diff
-    _maxDiffHeight = 0;
+    _values[kStatsMaxHeightDiff] = 0;
     for (int i=1; i<heights.length; i++) {
       int diff = (heights[i]-heights[i-1]).abs();
-      if (diff > _maxDiffHeight) {
-        _maxDiffHeight = diff;
+      if (diff > _values[kStatsMaxHeightDiff]) {
+        _values[kStatsMaxHeightDiff] = diff;
       }
     }
 
     // now cald sd
     double sumDiff2 = 0;
     for (int height in heights) {
-      sumDiff2 = pow(height - _avgHeight, 2);
+      sumDiff2 = pow(height - _values[kStatsAvgHeight], 2);
     }
-    _heightSD = NumberUtils.toPrecision(sqrt(sumDiff2 / heights.length), 4);
+    _values[kStatsHeightStdDev] = NumberUtils.toPrecision(sqrt(sumDiff2 / heights.length), 4);
   }
 }
