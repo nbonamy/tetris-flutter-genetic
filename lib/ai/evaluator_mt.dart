@@ -2,6 +2,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:console/console.dart';
 import 'package:darwin/isolate_worker.dart';
 import 'package:darwin/src/evaluator_multithreaded.dart';
 import 'package:tetris/ai/ai.dart';
@@ -43,7 +44,7 @@ class TetrisEvaluatorMT extends MultithreadedPhenotypeSerialEvaluator<TetrisPhen
     // some reporting
     int maxLinesCompleted = result.scores.reduce(max);
     double avgLinesCompleted = result.scores.reduce((a, b) => a + b).toDouble() / result.scores.length;
-    print(' Best = ${maxLinesCompleted.toString().padLeft(8)}, Average = ${avgLinesCompleted.toStringAsFixed(2)}');
+    print('Best = ${maxLinesCompleted.toString().padLeft(8)}, Average = ${avgLinesCompleted.toStringAsFixed(2)}');
 
     // done
     return result;
@@ -69,6 +70,9 @@ class TetrisTask extends IsolateTask<TetrisPhenotype, TetrisLinesResult> {
     }
 
     // init
+    Console.moveToColumn(index);
+    Console.write('◦');
+    Console.moveToColumn(Genetic.kRunsPerMember+1);
     Smart ai = Smart(phenotype: phenotype);
 
     // run game
@@ -76,7 +80,9 @@ class TetrisTask extends IsolateTask<TetrisPhenotype, TetrisLinesResult> {
     while (true) {
       ai.play(game, null);
       if (game.isFinished) {
+        Console.moveToColumn(index);
         stdout.write('•');
+        Console.moveToColumn(Genetic.kRunsPerMember+1);
         final result = TetrisLinesResult();
         result.scores.add(game.linesCompleted);
         return result;
