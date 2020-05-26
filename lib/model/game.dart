@@ -7,7 +7,7 @@ import 'package:tetris/utils/randomizer.dart';
 class Game {
   static const int kRandomBagSize = 7;
   static const double kInitialSpeed = 1000;
-  static const int kIncreaseLevelEvery = 25;
+  static const int kIncreaseLevelEvery = 20;
   static const int kTetrominoMovedPoint = 1;
   static const int kTetrominoDroppedPoint = 10;
   static const List<int> kLinesCompletedLines = [
@@ -233,12 +233,10 @@ class Game {
       this._lines += linesCompleted;
       this._score += linesCompleted * 100;
     }
-  }
 
-  void _incCount() {
-    if (++this._count % kIncreaseLevelEvery == 0) {
-      this._level++;
-    }
+    // update level
+    this._level = this._lines ~/ kIncreaseLevelEvery;
+
   }
 
   List<List<TetrominoType>> getBoardState(bool includeCurrentTetromino) {
@@ -257,7 +255,6 @@ class Game {
   Tetromino _newTetromino() {
     Tetromino tetromino = _randomizer.next();
     tetromino.x = ((this._board.width - tetromino.width) / 2).floor();
-    _incCount();
     return tetromino;
   }
 }

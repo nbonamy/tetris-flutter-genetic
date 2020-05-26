@@ -28,7 +28,7 @@ class _GameScreenState extends State<GameScreen> implements TetrisUI {
   @override
   void initState() {
     super.initState();
-    _player = new GeneticPlayer(ui: this);
+    _player = new RealPlayer(ui: this);
     _assetsAudioPlayer = AssetsAudioPlayer();
     _assetsAudioPlayer.loop = true;
     /*_assetsAudioPlayer.open(
