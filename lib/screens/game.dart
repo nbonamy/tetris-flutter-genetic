@@ -1,6 +1,5 @@
-import 'package:assets_audio_player/assets_audio_player.dart';
+//import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:stanley/stanley.dart';
 import 'package:tetris/model/game.dart';
 import 'package:tetris/model/stats.dart';
@@ -17,20 +16,20 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> implements TetrisUI {
-  static const int kTickAiDuration = 100;
+  //static const int kTickAiDuration = 100;
 
   Game _game;
   bool _vertDragConsumed = false;
   double _horizDragDelta = 0;
-  AssetsAudioPlayer _assetsAudioPlayer;
+  //AssetsAudioPlayer _assetsAudioPlayer;
   Player _player;
 
   @override
   void initState() {
     super.initState();
-    _player = new RealPlayer(ui: this);
-    _assetsAudioPlayer = AssetsAudioPlayer();
-    _assetsAudioPlayer.loop = true;
+    _player = new AiPlayer(ui: this);
+    // _assetsAudioPlayer = AssetsAudioPlayer();
+    // _assetsAudioPlayer.loop = true;
     /*_assetsAudioPlayer.open(
       Audio('assets/sounds/theme.mp3'),
       volume: 0.5,
@@ -51,16 +50,21 @@ class _GameScreenState extends State<GameScreen> implements TetrisUI {
     Stats stats = Stats.from(game: _game);
     String linesToPieces = '-';
     if (_game.linesCompleted > 0) {
-      linesToPieces = NumberUtils.toPrecision(_game.tetrominos / _game.linesCompleted, 2).toString();
+      linesToPieces =
+          NumberUtils.toPrecision(_game.tetrominos / _game.linesCompleted, 2)
+              .toString();
     }
 
     // next tetromino
     List<List<TetrominoType>> nextTetrominoColors;
     if (_player.userCanInteract) {
-      List<List<TetrominoType>> nextTetrominoBlocks = _game.nextTetromino?.blocks;
+      List<List<TetrominoType>> nextTetrominoBlocks =
+          _game.nextTetromino?.blocks;
       nextTetrominoColors = List.generate(nextTetrominoBlocks.length, (j) {
         return List.generate(nextTetrominoBlocks[j].length, (i) {
-          return nextTetrominoBlocks[j][i] != null ? _game.nextTetromino.type : null;
+          return nextTetrominoBlocks[j][i] != null
+              ? _game.nextTetromino.type
+              : null;
         });
       });
     }
@@ -87,21 +91,23 @@ class _GameScreenState extends State<GameScreen> implements TetrisUI {
                         title: 'PIECES',
                         value: _game.tetrominos,
                       ),
-                nextTetrominoColors == null ? null : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ScoreTitle(text: 'NEXT'),
-                    SizedBox(
-                      height: 16,
-                    ),
-                    CustomPaint(
-                      foregroundPainter: BlockPainter(
-                        blocks: nextTetrominoColors,
-                        cellSize: 10,
+                nextTetrominoColors == null
+                    ? null
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ScoreTitle(text: 'NEXT'),
+                          SizedBox(
+                            height: 16,
+                          ),
+                          CustomPaint(
+                            foregroundPainter: BlockPainter(
+                              blocks: nextTetrominoColors,
+                              cellSize: 10,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
               ].where((w) => w != null).toList(),
             ),
             SizedBox(
@@ -163,8 +169,10 @@ class _GameScreenState extends State<GameScreen> implements TetrisUI {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      UIUtils.monoText('hol: ${stats.totalHoles}/${stats.connectedHoles}'),
-                      UIUtils.monoText('wel: ${stats.maxWell}/${stats.sumWells}'),
+                      UIUtils.monoText(
+                          'hol: ${stats.totalHoles}/${stats.connectedHoles}'),
+                      UIUtils.monoText(
+                          'wel: ${stats.maxWell}/${stats.sumWells}'),
                       UIUtils.monoText('min: ${stats.minHeight}'),
                       UIUtils.monoText('max: ${stats.maxHeight}'),
                       UIUtils.monoText('avg: ${stats.avgHeight}'),

@@ -8,12 +8,13 @@ import 'package:tetris/ai/result.dart';
 import 'package:tetris/ai/smart.dart';
 import 'package:tetris/model/game.dart';
 
-class TetrisEvaluator extends PhenotypeEvaluator<TetrisPhenotype, double, TetrisLinesResult> implements TetrisEvaluatorAbstract {
-
+class TetrisEvaluator
+    extends PhenotypeEvaluator<TetrisPhenotype, double, TetrisLinesResult>
+    implements TetrisEvaluatorAbstract {
   Game game;
   bool _cancel = false;
   MovePlaying callback;
-  List<int> scores = List();
+  List<int> scores = [];
 
   @override
   Future<TetrisLinesResult> evaluate(TetrisPhenotype phenotype) async {

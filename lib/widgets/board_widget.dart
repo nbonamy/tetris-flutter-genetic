@@ -1,14 +1,12 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:stanley/stanley.dart';
 import 'package:tetris/model/game.dart';
 import 'package:tetris/utils/ui.dart';
 import 'package:tetris/widgets/block_painter.dart';
 
 class BoardWidget extends StatelessWidget {
-
   final Game game;
   final double borderSize;
   final bool drawGuidelines;
@@ -21,7 +19,6 @@ class BoardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     double width = MediaQuery.of(context).size.width * 0.6;
     double height = MediaQuery.of(context).size.height * 0.55;
     double cellSize = min(width / game.board.width, height / game.board.height);
@@ -54,18 +51,13 @@ class BoardWidget extends StatelessWidget {
   }
 
   _buildRowIds(cellSize) {
-
-    List<Widget> ids = List();
-    for (int i=game.board.height-1; i>=0; i--) {
+    List<Widget> ids = [];
+    for (int i = game.board.height - 1; i >= 0; i--) {
       ids.add(Decorator(
         height: cellSize,
-        child: UIUtils.text('${i+1}', size: 12),
+        child: UIUtils.text('${i + 1}', size: 12),
       ));
     }
     return ids;
-
   }
-
 }
-
-

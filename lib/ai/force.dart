@@ -1,4 +1,3 @@
-
 import 'dart:math';
 
 import 'package:tetris/ai/ai.dart';
@@ -7,12 +6,10 @@ import 'package:tetris/model/stats.dart';
 import 'package:tetris/utils/number.dart';
 
 class BruteForce extends Pajitnov with MovePlayer {
-
-  List<int> _linesCount = List();
+  List<int> _linesCount = [];
 
   @override
   Move selectMove(Game game, List<Move> moves) {
-
     // init
     Move bestMove;
     int bestLines = 0;
@@ -22,7 +19,6 @@ class BruteForce extends Pajitnov with MovePlayer {
     // test each move
     moves.shuffle();
     for (Move move in moves) {
-
       // play
       int initialLines = game.linesCompleted;
       Game result = playMove(game, move, true, null);
@@ -50,7 +46,6 @@ class BruteForce extends Pajitnov with MovePlayer {
         bestLines = linesCompleted;
         bestMove = move;
       }
-
     }
 
     // done
@@ -58,14 +53,13 @@ class BruteForce extends Pajitnov with MovePlayer {
   }
 
   @override
-   void onGameFinished(Game game) {
+  void onGameFinished(Game game) {
     _linesCount.add(game.linesCompleted);
     super.onGameFinished(game);
   }
 
   @override
   String getInfo() {
-
     // need data
     if (_linesCount.isEmpty) {
       return null;
@@ -76,11 +70,10 @@ class BruteForce extends Pajitnov with MovePlayer {
     int lastScore = _linesCount.last;
     int worstScore = _linesCount.reduce(min);
     int bestScore = _linesCount.reduce(max);
-    double avgScore = NumberUtils.toPrecision(_linesCount.reduce((a, b) => a + b) / _linesCount.length, 2);
+    double avgScore = NumberUtils.toPrecision(
+        _linesCount.reduce((a, b) => a + b) / _linesCount.length, 2);
 
     // done
     return ' cnt: $numScores\nlast: $lastScore\nhigh: $bestScore\n low: $worstScore\n avg: $avgScore';
-
   }
-
 }

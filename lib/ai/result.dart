@@ -3,16 +3,15 @@ import 'dart:math';
 import 'package:darwin/darwin.dart';
 
 class TetrisLinesResult extends FitnessResult {
-
   static double linesToFitness(double lines) {
-    return -lines;//1000.0 / (1.0 + lines);
+    return -lines; //1000.0 / (1.0 + lines);
   }
 
   static int fitnessToLines(double fitness) {
-    return -fitness.toInt();//(1000.0 / fitness).round() - 1;
+    return -fitness.toInt(); //(1000.0 / fitness).round() - 1;
   }
 
-  List<int> scores = List();
+  List<int> scores = [];
   static int bestScoreGeneration = 0;
   static int bestScoreEver = 0;
 
@@ -32,10 +31,10 @@ class TetrisLinesResult extends FitnessResult {
 
   @override
   double evaluate() => value;
-
 }
 
-TetrisLinesResult tetrisLinesResultCombinator(TetrisLinesResult a, TetrisLinesResult b) {
+TetrisLinesResult tetrisLinesResultCombinator(
+    TetrisLinesResult a, TetrisLinesResult b) {
   final result = new TetrisLinesResult();
   result.scores.addAll(a.scores);
   result.scores.addAll(b.scores);
@@ -44,6 +43,7 @@ TetrisLinesResult tetrisLinesResultCombinator(TetrisLinesResult a, TetrisLinesRe
 }
 
 void _updateBestScores(int score) {
-  TetrisLinesResult.bestScoreGeneration = max(score, TetrisLinesResult.bestScoreGeneration);
+  TetrisLinesResult.bestScoreGeneration =
+      max(score, TetrisLinesResult.bestScoreGeneration);
   TetrisLinesResult.bestScoreEver = max(score, TetrisLinesResult.bestScoreEver);
 }

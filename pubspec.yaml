@@ -3,17 +3,16 @@ description: A new Flutter project.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.10.0 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
   darwin: ^0.4.1
-  stanley: ^0.6.2
-  console: ^3.1.0
-  scidart: ^0.0.1-dev.6
+  stanley: ^0.8.0
+  console: ^4.1.0
+  scidart: ^0.0.2-dev.12
   flutter_statusbarcolor: ^0.2.3
-  assets_audio_player: ^1.6.0
 
 dev_dependencies:
   flutter_test:
