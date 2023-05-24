@@ -86,10 +86,10 @@ class RealPlayer extends Player {
   }
 }
 
-class AiPlayer extends Player {
+class BotPlayer extends Player {
   Pajitnov _ai = BruteForce();
 
-  AiPlayer({
+  BotPlayer({
     required super.ui,
   }) {}
 
@@ -138,7 +138,7 @@ class AiPlayer extends Player {
   }
 }
 
-class GeneticPlayer extends AiPlayer {
+class GeneticPlayer extends BotPlayer {
   late Pajitnov _ai;
 
   GeneticPlayer({
