@@ -1,32 +1,30 @@
-
 import 'package:flutter/material.dart';
 import 'package:stanley/stanley.dart';
 import 'package:tetris/model/tetromino.dart';
 import 'package:tetris/utils/consts.dart';
 
 class UIUtils {
-
-  static Text text(String text, {
-    TextAlign align,
-    double size,
-    bool bold,
+  static Text text(
+    String text, {
+    TextAlign? align,
+    double? size,
+    bool? bold,
   }) {
-
     return UIHelper.text(
       text,
       family: Consts.kFontFamily,
       color: Consts.kTextColor,
       align: align,
       size: size,
-      bold: bold,
+      bold: bold == null ? false : bold,
     );
   }
 
-  static Widget monoText(String text, {
-    double size,
-    bool bold,
+  static Widget monoText(
+    String text, {
+    double? size,
+    bool? bold,
   }) {
-
     // this is too slow. disabling.
     return UIUtils.text(text, size: size, bold: bold);
 
@@ -50,9 +48,7 @@ class UIUtils {
   }
 
   static Color tetrominoColor(TetrominoType type) {
-
     switch (type) {
-
       case TetrominoType.o:
         return Colors.yellow;
       case TetrominoType.i:
@@ -70,8 +66,5 @@ class UIUtils {
       default:
         return Colors.white;
     }
-
-
-
   }
 }

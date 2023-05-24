@@ -11,8 +11,8 @@ class BoardWidget extends StatelessWidget {
   final double borderSize;
   final bool drawGuidelines;
   const BoardWidget({
-    Key key,
-    this.game,
+    Key? key,
+    required this.game,
     this.borderSize = 4,
     this.drawGuidelines = true,
   }) : super(key: key);

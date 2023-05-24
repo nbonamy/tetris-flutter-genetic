@@ -16,8 +16,8 @@ class TetrisEvaluatorMT extends MultithreadedPhenotypeSerialEvaluator<
     double,
     TetrisLinesResult> implements TetrisEvaluatorAbstract {
   set game(Game _) {}
-  set callback(MovePlaying _) {}
-  List<int> get scores {
+  set callback(MovePlaying? _) {}
+  List<int>? get scores {
     return null;
   }
 
@@ -35,7 +35,7 @@ class TetrisEvaluatorMT extends MultithreadedPhenotypeSerialEvaluator<
           }
 
           // last run
-          return new TetrisTask();
+          return new TetrisTask(index: -1);
         }, tetrisLinesResultCombinator, TetrisLinesResult());
 
   @override
@@ -57,9 +57,9 @@ class TetrisEvaluatorMT extends MultithreadedPhenotypeSerialEvaluator<
 
 class TetrisTask extends IsolateTask<TetrisPhenotype, TetrisLinesResult> {
   final int index;
-  final TetrisPhenotype phenotype;
+  final TetrisPhenotype? phenotype;
   TetrisTask({
-    this.index,
+    required this.index,
     this.phenotype,
   });
 
@@ -67,14 +67,14 @@ class TetrisTask extends IsolateTask<TetrisPhenotype, TetrisLinesResult> {
   TetrisLinesResult execute() {
     // check
     if (phenotype == null) {
-      return null;
+      return TetrisLinesResult();
     }
 
     // init
     Console.moveToColumn(index);
     Console.write('◦');
     Console.moveToColumn(Genetic.kRunsPerMember + 1);
-    Smart ai = Smart(phenotype: phenotype);
+    Smart ai = Smart(phenotype: phenotype!);
 
     // run game
     Game game = Game();

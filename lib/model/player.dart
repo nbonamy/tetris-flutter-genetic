@@ -1,4 +1,3 @@
-
 import 'package:tetris/ai/ai.dart';
 import 'package:tetris/ai/force.dart';
 import 'package:tetris/ai/genetic.dart';
@@ -11,11 +10,10 @@ abstract class TetrisUI {
 }
 
 abstract class Player {
-
-  Game _game;
+  late Game _game;
   final TetrisUI ui;
   Player({
-    this.ui,
+    required this.ui,
   });
 
   Game get game => _game;
@@ -25,12 +23,12 @@ abstract class Player {
 
   void startGame() {
     _game = Game();
-    ui?.setCurrentGame(_game);
+    ui.setCurrentGame(_game);
   }
 
   void gameEnded();
 
-  String getInfo();
+  String? getInfo();
 
   void onBoardTap() {
     if (_game.isFinished) {
@@ -39,17 +37,15 @@ abstract class Player {
       }
     } else if (userCanInteract) {
       _game.rotate();
-      ui?.stateUpdateNeeded();
+      ui.stateUpdateNeeded();
     }
   }
-
 }
 
 class RealPlayer extends Player {
-
   RealPlayer({
-    TetrisUI ui,
-  }) : super(ui: ui);
+    required super.ui,
+  });
 
   @override
   bool get autoRestart => false;
@@ -64,47 +60,38 @@ class RealPlayer extends Player {
   }
 
   @override
-  void gameEnded() {
-  }
+  void gameEnded() {}
 
   @override
-  String getInfo() {
+  String? getInfo() {
     return null;
   }
 
   void _tick() {
-
     // tick: true means current piece is done
     if (_game.tick()) {
-      ui?.currentPieceDone();
+      ui.currentPieceDone();
     }
 
     // refesh ui
-    ui?.stateUpdateNeeded();
+    ui.stateUpdateNeeded();
 
     // continue?
     if (_game.isFinished == false) {
-
       // set next timer
       Future.delayed(Duration(milliseconds: _game.delay), () {
         _tick();
       });
-
     }
-
   }
-
 }
 
 class AiPlayer extends Player {
-
-  Pajitnov _ai;
+  Pajitnov _ai = BruteForce();
 
   AiPlayer({
-    TetrisUI ui,
-  }) : super(ui: ui) {
-    _ai = BruteForce();
-  }
+    required super.ui,
+  }) {}
 
   @override
   bool get autoRestart => false;
@@ -119,16 +106,12 @@ class AiPlayer extends Player {
   }
 
   void _play() {
-
     _ai.play(_game, (bool finalOp) {
-
       // refresh
-      ui?.stateUpdateNeeded();
+      ui.stateUpdateNeeded();
 
       if (finalOp) {
-
         if (_game.isFinished) {
-
           // callback
           _ai.onGameFinished(_game);
 
@@ -136,42 +119,33 @@ class AiPlayer extends Player {
           Future.delayed(Duration(milliseconds: 500), () {
             startGame();
           });
-
         } else {
-
           // continue
           Future.delayed(Duration(milliseconds: 5), () {
             _play();
           });
-
         }
-
       }
-
     });
-
   }
 
   @override
-  void gameEnded() {
-  }
+  void gameEnded() {}
 
   @override
-  String getInfo() {
+  String? getInfo() {
     return _ai.getInfo();
   }
-
 }
 
 class GeneticPlayer extends AiPlayer {
-
-  Pajitnov _ai;
+  late Pajitnov _ai;
 
   GeneticPlayer({
-    TetrisUI ui,
+    required super.ui,
     bool multithread = false,
     bool print = true,
-  }) : super(ui: ui) {
+  }) {
     _ai = Genetic(multithread);
     if (print == false) {
       (_ai as Genetic).printf = (_) {};
@@ -191,34 +165,25 @@ class GeneticPlayer extends AiPlayer {
   }
 
   void _play() {
-
     _ai.play(_game, (bool finalOp) {
-
       // refresh
-      ui?.stateUpdateNeeded();
+      ui.stateUpdateNeeded();
 
       if (finalOp) {
-
         if (_game.isFinished) {
-
           // callback
           _ai.onGameFinished(_game);
           startGame();
-
         }
-
       }
-
     });
-
   }
 
   @override
-  void gameEnded() {
-  }
+  void gameEnded() {}
 
   @override
-  String getInfo() {
+  String? getInfo() {
     return _ai.getInfo();
   }
 
@@ -230,5 +195,4 @@ class GeneticPlayer extends AiPlayer {
   GeneticInfo get geneticInfo {
     return (_ai as Genetic).getGeneticInfo();
   }
-
 }

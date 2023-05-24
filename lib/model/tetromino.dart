@@ -42,7 +42,7 @@ abstract class Tetromino {
   int get width;
   int get height;
 
-  Tetromino clone() {
+  Tetromino? clone() {
     Tetromino clone;
     switch (this.type) {
       case TetrominoType.o:
@@ -68,12 +68,6 @@ abstract class Tetromino {
         break;
       default:
         return null;
-        break;
-    }
-
-    // check
-    if (clone == null) {
-      return clone;
     }
 
     // copy
@@ -85,7 +79,7 @@ abstract class Tetromino {
     return clone;
   }
 
-  List<List<TetrominoType>> get blocks;
+  List<List<TetrominoType?>> get blocks;
 
   void rotate() {
     switch (this.rotation) {

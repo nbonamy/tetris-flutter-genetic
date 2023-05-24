@@ -61,10 +61,10 @@ packages:
     dependency: "direct main"
     description:
       name: darwin
-      sha256: "38a901259a8bfe1b382cad35ad1d7ac6d604f567b4aec1e9d344dbaa9c83d588"
+      sha256: "7b7d80847729d9ca75f12713796595533b41c071904e1afef5bfc81021caff31"
       url: "https://pub.dev"
     source: hosted
-    version: "0.4.1"
+    version: "0.8.0"
   easy_localization:
     dependency: transitive
     description:
@@ -115,14 +115,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_statusbarcolor:
+  flutter_statusbarcolor_ns:
     dependency: "direct main"
     description:
-      name: flutter_statusbarcolor
-      sha256: "37da09a13840f43d7ef4cd7ac8ad718ba8de68a1d89959199413f9b4c4d5f8dc"
+      name: flutter_statusbarcolor_ns
+      sha256: "28ad644daac2d692b6d0d576458b7967f1aaeaf212eddfcb40ec8b5e68621abc"
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.3"
+    version: "0.5.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -379,5 +379,5 @@ packages:
     source: hosted
     version: "1.0.0"
 sdks:
-  dart: ">=2.18.0 <3.0.0"
+  dart: ">=2.19.0 <3.0.0"
   flutter: ">=3.3.0"

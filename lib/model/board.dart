@@ -1,7 +1,7 @@
 import 'package:tetris/model/tetromino.dart';
 
 class Board {
-  List<List<TetrominoType>> _state;
+  late List<List<TetrominoType?>> _state;
 
   final int width;
   final int height;
@@ -21,7 +21,7 @@ class Board {
     return clone;
   }
 
-  List<List<TetrominoType>> get state {
+  List<List<TetrominoType?>> get state {
     // we send a clone
     return List.generate(_state.length, (j) {
       return List.generate(_state[j].length, (i) {
@@ -38,7 +38,7 @@ class Board {
     for (int j = _state.length - 1; j >= 0; j--) {
       // check if complete
       bool complete = true;
-      List<TetrominoType> row = _state[j];
+      List<TetrominoType?> row = _state[j];
       for (int i = 0; i < row.length; i++) {
         if (row[i] == null) {
           complete = false;
@@ -72,12 +72,13 @@ class Board {
     Board.addTetrominoToState(this, _state, tetromino);
   }
 
-  static void addTetrominoToState(Board board, List<List<TetrominoType>> state, Tetromino tetromino) {
+  static void addTetrominoToState(
+      Board board, List<List<TetrominoType?>> state, Tetromino tetromino) {
     // place each block
-    List<List<TetrominoType>> blocks = tetromino.blocks;
+    List<List<TetrominoType?>> blocks = tetromino.blocks;
     for (int j = 0; j < blocks.length; j++) {
       if (j + tetromino.y >= 0 && j + tetromino.y <= board.height - 1) {
-        List<TetrominoType> row = blocks[j];
+        List<TetrominoType?> row = blocks[j];
         for (int i = 0; i < row.length; i++) {
           if (row[i] != null && i + tetromino.x <= board.width - 1) {
             state[j + tetromino.y][i + tetromino.x] = tetromino.type;

@@ -17,32 +17,20 @@ class Game {
     8,
   ];
 
-  int _level;
-  int _count;
-  int _lines;
-  int _score;
+  int _level = 1;
+  int _count = 0;
+  int _lines = 0;
+  int _score = 0;
 
-  Board _board;
-  bool _finished;
-  Randomizer _randomizer;
-  Tetromino _nextTetromino;
-  Tetromino _currentTetromino;
+  Board _board = Board();
+  bool _finished = false;
+  Randomizer _randomizer = Randomizer(bagSize: kRandomBagSize);
+  Tetromino? _nextTetromino;
+  Tetromino? _currentTetromino;
 
   Game() {
-    // easy
-    this._level = 1;
-    this._count = 0;
-    this._lines = 0;
-    this._score = 0;
-    this._finished = false;
-    this._board = Board();
-
-    // randomizer
-    this._randomizer = Randomizer(bagSize: kRandomBagSize);
-
-    // get two tetrominos
-    _currentTetromino = _newTetromino();
     _nextTetromino = _newTetromino();
+    _currentTetromino = _newTetromino();
   }
 
   Game clone() {
@@ -57,8 +45,8 @@ class Game {
 
     // clone board
     clone._board = this._board.clone();
-    clone._currentTetromino = this._currentTetromino.clone();
-    clone._nextTetromino = this._nextTetromino.clone();
+    clone._currentTetromino = this._currentTetromino?.clone();
+    clone._nextTetromino = this._nextTetromino?.clone();
 
     // done
     return clone;
@@ -93,11 +81,11 @@ class Game {
     return this._board;
   }
 
-  Tetromino get currentTetromino {
+  Tetromino? get currentTetromino {
     return _currentTetromino;
   }
 
-  Tetromino get nextTetromino {
+  Tetromino? get nextTetromino {
     return _nextTetromino;
   }
 
@@ -105,7 +93,7 @@ class Game {
     // move the current tetromino
     if (_currentTetromino != null) {
       // stop or move
-      if (_checkCollision(_currentTetromino, 0, 1)) {
+      if (_checkCollision(_currentTetromino!, 0, 1)) {
         // end of game
         if (_currentTetromino?.y == 0) {
           _finished = true;
@@ -113,7 +101,7 @@ class Game {
         }
 
         // add tetromino to state and check completed lines
-        _board.addTetromino(_currentTetromino);
+        _board.addTetromino(_currentTetromino!);
         _checkCompletedLines();
         _currentTetromino = null;
 
@@ -121,7 +109,7 @@ class Game {
         _score += kTetrominoDroppedPoint;
       } else {
         // simply move it down
-        _currentTetromino.y++;
+        _currentTetromino!.y++;
 
         // score
         _score += kTetrominoMovedPoint;
@@ -132,8 +120,8 @@ class Game {
     if (_finished == false && _currentTetromino == null) {
       _currentTetromino = _nextTetromino;
       _nextTetromino = _newTetromino();
-      while (_checkCollision(_currentTetromino, 0, 0)) {
-        _currentTetromino.y--;
+      while (_checkCollision(_currentTetromino!, 0, 0)) {
+        _currentTetromino!.y--;
         _finished = true;
       }
       return true;
@@ -144,17 +132,18 @@ class Game {
   }
 
   void moveLeft() {
-    if (_currentTetromino != null && _currentTetromino.x > 0) {
-      if (_checkCollision(_currentTetromino, -1, 0) == false) {
-        _currentTetromino.x--;
+    if (_currentTetromino != null && _currentTetromino!.x > 0) {
+      if (_checkCollision(_currentTetromino!, -1, 0) == false) {
+        _currentTetromino!.x--;
       }
     }
   }
 
   void moveRight() {
-    if (_currentTetromino != null && _currentTetromino.x + _currentTetromino.width < _board.width) {
-      if (_checkCollision(_currentTetromino, 1, 0) == false) {
-        _currentTetromino.x++;
+    if (_currentTetromino != null &&
+        _currentTetromino!.x + _currentTetromino!.width < _board.width) {
+      if (_checkCollision(_currentTetromino!, 1, 0) == false) {
+        _currentTetromino!.x++;
       }
     }
   }
@@ -166,18 +155,18 @@ class Game {
     }
 
     // save values
-    int x = _currentTetromino.x;
-    int y = _currentTetromino.y;
-    Rotation rot = _currentTetromino.rotation;
+    int x = _currentTetromino!.x;
+    int y = _currentTetromino!.y;
+    Rotation rot = _currentTetromino!.rotation;
 
     // rotate
-    _currentTetromino.rotate();
+    _currentTetromino!.rotate();
 
     // if collision restore
-    if (_checkCollision(_currentTetromino, 0, 0)) {
-      _currentTetromino.x = x;
-      _currentTetromino.y = y;
-      _currentTetromino.rotation = rot;
+    if (_checkCollision(_currentTetromino!, 0, 0)) {
+      _currentTetromino!.x = x;
+      _currentTetromino!.y = y;
+      _currentTetromino!.rotation = rot;
       return false;
     }
 
@@ -195,7 +184,7 @@ class Game {
 
   bool _checkCollision(Tetromino tetromino, int deltaX, int deltaY) {
     // check boundaries
-    List<List<TetrominoType>> blocks = tetromino.blocks;
+    List<List<TetrominoType?>> blocks = tetromino.blocks;
     int newX = tetromino.x + tetromino.blocks.first.length - 1 + deltaX;
     int newY = tetromino.y + tetromino.blocks.length - 1 + deltaY;
     if (newX < 0 || newX >= _board.width || newY >= _board.height) {
@@ -203,15 +192,16 @@ class Game {
     }
 
     // check
-    List<List<TetrominoType>> state = _board.state;
+    List<List<TetrominoType?>> state = _board.state;
     for (int j = 0; j < blocks.length; j++) {
       int newY = tetromino.y + j + deltaY;
       if (newY >= 0 && newY <= _board.height - 1) {
-        List<TetrominoType> row = blocks[j];
+        List<TetrominoType?> row = blocks[j];
         for (int i = 0; i < row.length; i++) {
           int newX = tetromino.x + i + deltaX;
           if (row[i] != null && newX >= 0 && newX <= _board.width - 1) {
-            if (state[tetromino.y + j + deltaY][tetromino.x + i + deltaX] != null) {
+            if (state[tetromino.y + j + deltaY][tetromino.x + i + deltaX] !=
+                null) {
               return true;
             }
           }
@@ -236,16 +226,15 @@ class Game {
 
     // update level
     this._level = this._lines ~/ kIncreaseLevelEvery;
-
   }
 
-  List<List<TetrominoType>> getBoardState(bool includeCurrentTetromino) {
+  List<List<TetrominoType?>> getBoardState(bool includeCurrentTetromino) {
     // get current state
-    List<List<TetrominoType>> state = _board.state;
+    List<List<TetrominoType?>> state = _board.state;
 
     // add current tetromino if needed
     if (includeCurrentTetromino == true && _currentTetromino != null) {
-      Board.addTetrominoToState(_board, state, _currentTetromino);
+      Board.addTetrominoToState(_board, state, _currentTetromino!);
     }
 
     // done

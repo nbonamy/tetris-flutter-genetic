@@ -20,7 +20,7 @@ const String kStatsSumWells = 'sumWells';
 class Stats {
   // https://pdfs.semanticscholar.org/b0fe/1ed14404db2eb1db6a777961440723d6e06f.pdf?_ga=2.183710566.1551116755.1589937221-487702206.1589937221
 
-  Map _values;
+  Map _values = {};
 
   num get minHeight => _values[kStatsMinHeight];
   num get maxHeight => _values[kStatsMaxHeight];
@@ -44,13 +44,10 @@ class Stats {
   }
 
   Stats.from({
-    Game game,
+    required Game game,
   }) {
-    // init
-    _values = Map();
-
     // based on
-    List<List<TetrominoType>> state = game.getBoardState(false);
+    List<List<TetrominoType?>> state = game.getBoardState(false);
 
     // holes
     int totalBlocks = 0;
@@ -89,7 +86,7 @@ class Stats {
     // height of each column
     List<int> heights = List.generate(game.board.width, (_) => 0);
     for (int j = 0; j < game.board.height; j++) {
-      List<TetrominoType> row = state[j];
+      List<TetrominoType?> row = state[j];
       for (int i = 0; i < row.length; i++) {
         if (row[i] != null && heights[i] == 0) {
           heights[i] = game.board.height - j;
@@ -101,7 +98,8 @@ class Stats {
     _values[kStatsMinHeight] = heights.reduce(min);
     _values[kStatsMaxHeight] = heights.reduce(max);
     _values[kStatsAvgHeight] = heights.reduce((a, b) => a + b) / heights.length;
-    _values[kStatsTotalHeightDiff] = _values[kStatsMaxHeight] - _values[kStatsMinHeight];
+    _values[kStatsTotalHeightDiff] =
+        _values[kStatsMaxHeight] - _values[kStatsMinHeight];
 
     // calc max diff
     _values[kStatsMaxHeightDiff] = 0;
@@ -115,18 +113,18 @@ class Stats {
     // now cald sd
     double sumDiff2 = 0;
     for (int height in heights) {
-      sumDiff2 = pow(height - _values[kStatsAvgHeight], 2);
+      sumDiff2 = pow(height - _values[kStatsAvgHeight], 2).toDouble();
     }
-    _values[kStatsHeightStdDev] = NumberUtils.toPrecision(sqrt(sumDiff2 / heights.length), 4);
+    _values[kStatsHeightStdDev] =
+        NumberUtils.toPrecision(sqrt(sumDiff2 / heights.length), 4);
 
     // now wells
     _values[kStatsMaxWell] = 0;
     _values[kStatsSumWells] = 0;
     for (int i = 0; i < heights.length; i++) {
-
       int height = heights[i];
-      int left = (i==0) ? heights[i] : heights[i-1];
-      int right = (i==heights.length-1) ? heights[i] : heights[i+1];
+      int left = (i == 0) ? heights[i] : heights[i - 1];
+      int right = (i == heights.length - 1) ? heights[i] : heights[i + 1];
       int well = min(height - left, height - right);
       if (well < 0) {
         _values[kStatsSumWells] -= well;
@@ -135,6 +133,5 @@ class Stats {
         }
       }
     }
-
   }
 }

@@ -29,6 +29,10 @@ class TetrisLinesResult extends FitnessResult {
     return value.compareTo(other.value);
   }
 
+  bool dominates(TetrisLinesResult other) {
+    return value > other.value;
+  }
+
   @override
   double evaluate() => value;
 }

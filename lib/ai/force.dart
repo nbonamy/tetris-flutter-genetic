@@ -9,9 +9,9 @@ class BruteForce extends Pajitnov with MovePlayer {
   List<int> _linesCount = [];
 
   @override
-  Move selectMove(Game game, List<Move> moves) {
+  Move? selectMove(Game game, List<Move> moves) {
     // init
-    Move bestMove;
+    Move? bestMove;
     int bestLines = 0;
     int bestDiffHeight = game.board.height;
     int bestHoles = game.board.width * game.board.height + 1;
@@ -21,8 +21,8 @@ class BruteForce extends Pajitnov with MovePlayer {
     for (Move move in moves) {
       // play
       int initialLines = game.linesCompleted;
-      Game result = playMove(game, move, true, null);
-      Stats stats = Stats.from(game: result);
+      Game? result = playMove(game, move, true, null);
+      Stats stats = Stats.from(game: result!);
       int linesCompleted = result.linesCompleted - initialLines;
 
       // select
@@ -41,8 +41,8 @@ class BruteForce extends Pajitnov with MovePlayer {
 
       // select
       if (best) {
-        bestHoles = stats.totalHoles;
-        bestDiffHeight = stats.maxDiffHeight;
+        bestHoles = stats.totalHoles.toInt();
+        bestDiffHeight = stats.maxDiffHeight.toInt();
         bestLines = linesCompleted;
         bestMove = move;
       }
@@ -59,7 +59,7 @@ class BruteForce extends Pajitnov with MovePlayer {
   }
 
   @override
-  String getInfo() {
+  String? getInfo() {
     // need data
     if (_linesCount.isEmpty) {
       return null;

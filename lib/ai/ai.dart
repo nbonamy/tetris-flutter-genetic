@@ -6,29 +6,27 @@ class Move {
   final int rotations;
   final int translations;
   Move({
-    this.rotations,
-    this.translations,
+    required this.rotations,
+    required this.translations,
   });
 }
 
 typedef MovePlaying(bool finalOp);
 
 abstract class Pajitnov {
-  Random random;
+  Random random = Random();
 
-  Pajitnov() {
-    random = new Random();
-  }
+  Pajitnov() {}
 
-  void play(Game game, MovePlaying callback) {
+  void play(Game game, MovePlaying? callback) {
     // we need moves
-    List<Move> moves = _getAllMoves(game);
+    List<Move>? moves = _getAllMoves(game);
     if (moves == null) {
       return;
     }
 
     // select the move
-    Move move = selectMove(game, moves);
+    Move? move = selectMove(game, moves);
     if (move == null) {
       move = moves[0];
     }
@@ -39,24 +37,27 @@ abstract class Pajitnov {
 
   void kill() {}
 
-  Move selectMove(Game game, List<Move> moves);
-  Game playMove(Game game, Move move, bool simulation, MovePlaying callback);
+  Move? selectMove(Game game, List<Move> moves);
+  Game? playMove(Game game, Move move, bool simulation, MovePlaying? callback);
 
   void onGameFinished(Game game) {}
 
-  String getInfo() {
+  String? getInfo() {
     return null;
   }
 
-  List<Move> _getAllMoves(Game game) {
+  List<Move>? _getAllMoves(Game game) {
     // get the current tetromino
-    Tetromino tetromino = game.currentTetromino;
+    Tetromino? tetromino = game.currentTetromino;
     if (tetromino == null) {
       return null;
     }
 
     // clone it
     tetromino = tetromino.clone();
+    if (tetromino == null) {
+      return null;
+    }
 
     // generate all
     List<Move> moves = [];
@@ -83,7 +84,7 @@ abstract class Pajitnov {
 }
 
 mixin MovePlayer {
-  Game playMove(Game game, Move move, bool simulation, MovePlaying callback) {
+  Game? playMove(Game game, Move move, bool simulation, MovePlaying? callback) {
     // if not simulation play it directly
     if (simulation == false) {
       _playMove(game, move, callback);
@@ -96,7 +97,7 @@ mixin MovePlayer {
     return clone;
   }
 
-  void _playMove(Game game, Move move, MovePlaying callback) {
+  void _playMove(Game game, Move move, MovePlaying? callback) {
     // first rotate
     for (int r = 0; r < move.rotations; r++) {
       game.rotate();

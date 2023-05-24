@@ -8,18 +8,18 @@ import 'package:tetris/model/game.dart';
 import 'package:tetris/model/player.dart';
 
 class ConsoleUI extends TetrisUI {
-  GeneticPlayer player = GeneticPlayer();
+  late GeneticPlayer player;
   //int _progress = 0;
 
+  ConsoleUI() {
+    player = GeneticPlayer(ui: this);
+  }
   @override
   void currentPieceDone() {}
 
   @override
   void setCurrentGame(Game game) {
     GeneticInfo info = player.geneticInfo;
-    if (info == null) {
-      return;
-    }
 
     // print it
     //Console.moveCursor(row: 1);
@@ -51,7 +51,7 @@ class ConsoleUI extends TetrisUI {
     //stdout.write('.');
   }
 
-  String _pad(int value) {
+  String _pad(int? value) {
     String str = value == null ? '-' : value.toString();
     return str.padLeft(8);
   }

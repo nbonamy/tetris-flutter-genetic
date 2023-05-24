@@ -18,11 +18,11 @@ class GameScreen extends StatefulWidget {
 class _GameScreenState extends State<GameScreen> implements TetrisUI {
   //static const int kTickAiDuration = 100;
 
-  Game _game;
+  late Game _game;
   bool _vertDragConsumed = false;
   double _horizDragDelta = 0;
   //AssetsAudioPlayer _assetsAudioPlayer;
-  Player _player;
+  late Player _player;
 
   @override
   void initState() {
@@ -56,22 +56,24 @@ class _GameScreenState extends State<GameScreen> implements TetrisUI {
     }
 
     // next tetromino
-    List<List<TetrominoType>> nextTetrominoColors;
+    List<List<TetrominoType?>>? nextTetrominoColors;
     if (_player.userCanInteract) {
-      List<List<TetrominoType>> nextTetrominoBlocks =
+      List<List<TetrominoType?>>? nextTetrominoBlocks =
           _game.nextTetromino?.blocks;
-      nextTetrominoColors = List.generate(nextTetrominoBlocks.length, (j) {
-        return List.generate(nextTetrominoBlocks[j].length, (i) {
-          return nextTetrominoBlocks[j][i] != null
-              ? _game.nextTetromino.type
-              : null;
+      if (nextTetrominoBlocks != null) {
+        nextTetrominoColors = List.generate(nextTetrominoBlocks.length, (j) {
+          return List.generate(nextTetrominoBlocks[j].length, (i) {
+            return nextTetrominoBlocks[j][i] != null
+                ? _game.nextTetromino!.type
+                : null;
+          });
         });
-      });
+      }
     }
 
     return Scaffold(
       body: Decorator(
-        paddingTop: 40,
+        paddingTop: 80,
         alignment: Alignment.topCenter,
         backgroundColor: Colors.black,
         child: Column(
@@ -91,24 +93,23 @@ class _GameScreenState extends State<GameScreen> implements TetrisUI {
                         title: 'PIECES',
                         value: _game.tetrominos,
                       ),
-                nextTetrominoColors == null
-                    ? null
-                    : Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ScoreTitle(text: 'NEXT'),
-                          SizedBox(
-                            height: 16,
-                          ),
-                          CustomPaint(
-                            foregroundPainter: BlockPainter(
-                              blocks: nextTetrominoColors,
-                              cellSize: 10,
-                            ),
-                          ),
-                        ],
+                if (nextTetrominoColors != null)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ScoreTitle(text: 'NEXT'),
+                      SizedBox(
+                        height: 16,
                       ),
-              ].where((w) => w != null).toList(),
+                      CustomPaint(
+                        foregroundPainter: BlockPainter(
+                          blocks: nextTetrominoColors,
+                          cellSize: 10,
+                        ),
+                      ),
+                    ],
+                  ),
+              ],
             ),
             SizedBox(
               height: 24,
@@ -211,9 +212,9 @@ class Score extends StatelessWidget {
   final String title;
   final int value;
   const Score({
-    Key key,
-    this.title,
-    this.value,
+    Key? key,
+    required this.title,
+    required this.value,
   }) : super(key: key);
 
   @override
@@ -237,8 +238,8 @@ class Score extends StatelessWidget {
 class ScoreTitle extends StatelessWidget {
   final String text;
   const ScoreTitle({
-    Key key,
-    this.text,
+    Key? key,
+    required this.text,
   }) : super(key: key);
 
   @override
@@ -250,8 +251,8 @@ class ScoreTitle extends StatelessWidget {
 class ScoreValue extends StatelessWidget {
   final int value;
   const ScoreValue({
-    Key key,
-    this.value,
+    Key? key,
+    required this.value,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {

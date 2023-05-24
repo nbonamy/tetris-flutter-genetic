@@ -1,14 +1,13 @@
-
 import 'package:tetris/model/tetromino.dart';
 
 class TetrominoT extends Tetromino {
-
   @override
   TetrominoType get type => TetrominoType.t;
 
   @override
   int get height {
-    if (this.rotation == Rotation.Normal || this.rotation == Rotation.SixOClock) {
+    if (this.rotation == Rotation.Normal ||
+        this.rotation == Rotation.SixOClock) {
       return 2;
     } else {
       return 3;
@@ -21,17 +20,30 @@ class TetrominoT extends Tetromino {
   }
 
   @override
-  List<List<TetrominoType>> get blocks {
+  List<List<TetrominoType?>> get blocks {
     switch (this.rotation) {
       case Rotation.ThreeOClock:
-        return [ [type,null], [type,type], [type,null] ];
+        return [
+          [type, null],
+          [type, type],
+          [type, null]
+        ];
       case Rotation.SixOClock:
-        return [ [type,type,type], [null,type,null] ];
+        return [
+          [type, type, type],
+          [null, type, null]
+        ];
       case Rotation.NineOClock:
-        return [ [null,type], [type,type], [null,type] ];
+        return [
+          [null, type],
+          [type, type],
+          [null, type]
+        ];
       default:
-      return [ [null,type,null], [type,type,type] ];
+        return [
+          [null, type, null],
+          [type, type, type]
+        ];
     }
   }
-
 }

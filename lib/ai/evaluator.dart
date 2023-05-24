@@ -11,9 +11,9 @@ import 'package:tetris/model/game.dart';
 class TetrisEvaluator
     extends PhenotypeEvaluator<TetrisPhenotype, double, TetrisLinesResult>
     implements TetrisEvaluatorAbstract {
-  Game game;
+  late Game game;
   bool _cancel = false;
-  MovePlaying callback;
+  MovePlaying? callback;
   List<int> scores = [];
 
   @override
