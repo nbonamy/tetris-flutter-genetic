@@ -9,7 +9,7 @@ dependencies:
   flutter:
     sdk: flutter
   darwin: ^0.8.0
-  stanley: ^0.8.0
+  stanley: ^0.8.1
   console: ^4.1.0
   scidart: ^0.0.2-dev.12
   flutter_statusbarcolor_ns: ^0.5.0
