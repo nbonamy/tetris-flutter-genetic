@@ -40,10 +40,9 @@ abstract class TetrisEvaluatorAbstract<TetrisPhenotype, double,
 }
 
 class Genetic extends Pajitnov with MovePlayer {
-  bool algoRunning = false;
-  late GeneticAlgorithm _algorithm;
-  late TetrisEvaluatorAbstract _evaluator;
+  GeneticAlgorithm? _algorithm;
   late Generation<TetrisPhenotype, double, TetrisLinesResult> _firstGeneration;
+  late TetrisEvaluatorAbstract _evaluator;
   late GenerationBreeder<TetrisPhenotype, double, TetrisLinesResult> _breeder;
 
   String _csvReport = '';
@@ -71,45 +70,6 @@ class Genetic extends Pajitnov with MovePlayer {
       ..mutationRate = Consts.kMutationRate
       ..crossoverProbability = Consts.kCrossoverProbability;
 
-    // algorithm
-    _algorithm = GeneticAlgorithm<TetrisPhenotype, double, TetrisLinesResult>(
-      _firstGeneration,
-      [
-        _evaluator
-            as PhenotypeEvaluator<TetrisPhenotype, double, TetrisLinesResult>
-      ],
-      _breeder,
-      printf: (_) {},
-      statusf: (_) {},
-    )..maxExperiments = -1;
-
-    // report
-    _algorithm.onGenerationEvaluated.listen((gen) {
-      // aborted
-      if (_algorithm.maxExperiments == 1) {
-        return;
-      }
-
-      // print our own status
-      printf('\n');
-      printf('Generation #${_algorithm.currentGeneration}');
-      printf(
-          '  - AVG ALL = ${TetrisLinesResult.fitnessToLines(gen.averageFitness!.toDouble())}');
-      printf(
-          '  - AVG BEST = ${TetrisLinesResult.fitnessToLines(gen.bestFitness!.toDouble())}');
-      printf('  - BEST GEN = ${TetrisLinesResult.bestScoreGeneration}');
-      printf('  - BEST EVER = ${TetrisLinesResult.bestScoreEver}');
-      printf('  - ELITE = ${gen.best!.genes}');
-      printf('\n');
-
-      // csv
-      _csvReport +=
-          '${_algorithm.currentGeneration},${TetrisLinesResult.fitnessToLines(gen.averageFitness!.toDouble())},${TetrisLinesResult.fitnessToLines(gen.bestFitness!.toDouble())},${TetrisLinesResult.bestScoreGeneration},${TetrisLinesResult.bestScoreEver}\n';
-
-      // reset
-      TetrisLinesResult.bestScoreGeneration = 0;
-    });
-
     // init
     _csvReport = '\n';
   }
@@ -120,23 +80,60 @@ class Genetic extends Pajitnov with MovePlayer {
     _evaluator.game = game;
     _evaluator.callback = callback;
 
-    // start algorithm
-    if (algoRunning == false) {
-      algoRunning = true;
+    // we need to do this only once
+    if (_algorithm == null) {
+      // create
+      _algorithm = GeneticAlgorithm<TetrisPhenotype, double, TetrisLinesResult>(
+        _firstGeneration,
+        [
+          _evaluator
+              as PhenotypeEvaluator<TetrisPhenotype, double, TetrisLinesResult>
+        ],
+        _breeder,
+        printf: (_) {},
+        statusf: (_) {},
+      );
+
+      // report
+      _algorithm!.onGenerationEvaluated.listen((gen) {
+        // aborted
+        if (_algorithm!.maxExperiments == 1) {
+          return;
+        }
+
+        // print our own status
+        printf('\n');
+        printf('Generation #${_algorithm!.currentGeneration}');
+        printf(
+            '  - AVG ALL = ${TetrisLinesResult.fitnessToLines(gen.averageFitness!.toDouble())}');
+        printf(
+            '  - AVG BEST = ${TetrisLinesResult.fitnessToLines(gen.bestFitness!.toDouble())}');
+        printf('  - BEST GEN = ${TetrisLinesResult.bestScoreGeneration}');
+        printf('  - BEST EVER = ${TetrisLinesResult.bestScoreEver}');
+        printf('  - ELITE = ${gen.best!.genes}');
+        printf('\n');
+
+        // csv
+        _csvReport +=
+            '${_algorithm!.currentGeneration},${TetrisLinesResult.fitnessToLines(gen.averageFitness!.toDouble())},${TetrisLinesResult.fitnessToLines(gen.bestFitness!.toDouble())},${TetrisLinesResult.bestScoreGeneration},${TetrisLinesResult.bestScoreEver}\n';
+
+        // reset
+        TetrisLinesResult.bestScoreGeneration = 0;
+      });
 
       // log
       print('START = ${DateTime.now()}');
       print('ELITE = ${_breeder.elitismCount}');
 
       // run
-      _algorithm.runUntilDone();
+      _algorithm!.runUntilDone();
     }
   }
 
   @override
   void kill() {
     print('CSV REPORT$_csvReport');
-    _algorithm.maxExperiments = 1;
+    _algorithm?.maxExperiments = 1;
     _evaluator.kill();
   }
 
@@ -162,14 +159,14 @@ class Genetic extends Pajitnov with MovePlayer {
 
   GeneticInfo getGeneticInfo() {
     // need some work to get current individual
-    int experiments = _algorithm.currentExperiment + 1;
+    int experiments = _algorithm?.currentExperiment ?? -1 + 1;
     int individuals = experiments -
         (experiments ~/ Consts.kMembersPerGeneration) *
             Consts.kMembersPerGeneration;
 
     // build
     return GeneticInfo(
-      currGeneration: _algorithm.currentGeneration + 1,
+      currGeneration: _algorithm?.currentGeneration ?? -1 + 1,
       currIndividual: individuals,
       currExperiment: _evaluator.scores?.length ?? 0,
       lastScoreInd: _evaluator.scores == null || _evaluator.scores!.isEmpty
