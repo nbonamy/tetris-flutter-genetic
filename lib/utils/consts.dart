@@ -14,14 +14,14 @@ class Consts {
   static const int kTetrominoDroppedPoint = 10;
   static const List<int> kLinesCompletedLines = [1, 3, 5, 8];
 
-  static const int kMembersPerGeneration = 25;
-  static const int kRunsPerMember = 5;
+  static const int kMembersPerGeneration = 50;
+  static const int kRunsPerMember = 10;
 
   static const double kElitism = 0.05;
   static const double kMutationRate = 0.01;
   static const double kCrossoverProbability = 0.8;
 
-  static const int kPauseMicroseconds = 1000;
+  static const int kPauseMicroseconds = 10;
 
   static const List kGattaca = [
     // [
