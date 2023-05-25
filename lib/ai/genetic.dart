@@ -167,7 +167,7 @@ class Genetic extends Pajitnov with MovePlayer {
     // build
     return GeneticInfo(
       currGeneration: _algorithm?.currentGeneration ?? -1 + 1,
-      currIndividual: individuals,
+      currIndividual: individuals + 1,
       currExperiment: _evaluator.scores?.length ?? 0,
       lastScoreInd: _evaluator.scores == null || _evaluator.scores!.isEmpty
           ? 0
