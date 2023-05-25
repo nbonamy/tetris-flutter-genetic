@@ -42,8 +42,8 @@ abstract class Pajitnov {
 
   void onGameFinished(Game game) {}
 
-  String? getInfo() {
-    return null;
+  String getInfo() {
+    return '';
   }
 
   List<Move>? _getAllMoves(Game game) {
@@ -55,9 +55,6 @@ abstract class Pajitnov {
 
     // clone it
     tetromino = tetromino.clone();
-    if (tetromino == null) {
-      return null;
-    }
 
     // generate all
     List<Move> moves = [];

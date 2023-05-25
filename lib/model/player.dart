@@ -28,7 +28,7 @@ abstract class Player {
 
   void gameEnded();
 
-  String? getInfo();
+  String getInfo();
 
   void onBoardTap() {
     if (_game.isFinished) {
@@ -63,8 +63,8 @@ class RealPlayer extends Player {
   void gameEnded() {}
 
   @override
-  String? getInfo() {
-    return null;
+  String getInfo() {
+    return '';
   }
 
   void _tick() {
@@ -133,7 +133,7 @@ class BotPlayer extends Player {
   void gameEnded() {}
 
   @override
-  String? getInfo() {
+  String getInfo() {
     return _ai.getInfo();
   }
 }
@@ -181,7 +181,7 @@ class GeneticPlayer extends BotPlayer {
   void gameEnded() {}
 
   @override
-  String? getInfo() {
+  String getInfo() {
     return _ai.getInfo();
   }
 

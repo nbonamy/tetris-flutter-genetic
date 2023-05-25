@@ -42,7 +42,7 @@ abstract class Tetromino {
   int get width;
   int get height;
 
-  Tetromino? clone() {
+  Tetromino clone() {
     Tetromino clone;
     switch (this.type) {
       case TetrominoType.o:
@@ -66,8 +66,6 @@ abstract class Tetromino {
       case TetrominoType.l:
         clone = TetrominoL();
         break;
-      default:
-        return null;
     }
 
     // copy

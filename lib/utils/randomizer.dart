@@ -3,7 +3,7 @@ import 'dart:collection';
 import 'package:tetris/model/tetromino.dart';
 
 class Randomizer {
-  Queue<Tetromino>? _bag;
+  Queue<Tetromino> _bag = Queue();
 
   final int bagSize;
   Randomizer({
@@ -11,20 +11,20 @@ class Randomizer {
   });
 
   Tetromino next() {
-    if (_bag == null || _bag!.isEmpty) {
+    if (_bag.isEmpty) {
       _fillBag();
     }
-    return _bag!.removeFirst();
+    return _bag.removeFirst();
   }
 
   _fillBag() {
     // reset the bag
-    _bag = new Queue();
+    _bag.clear();
 
     // fill it as needed
     int index = -1;
     List<Tetromino>? list;
-    while (_bag!.length < max(1, bagSize)) {
+    while (_bag.length < max(1, bagSize)) {
       // make sure the list if filled
       if (list == null || index >= list.length) {
         list = Tetromino.all();
@@ -33,7 +33,7 @@ class Randomizer {
       }
 
       // add next
-      _bag!.add(list[index++]);
+      _bag.add(list[index++]);
     }
   }
 }

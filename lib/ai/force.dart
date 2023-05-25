@@ -59,10 +59,10 @@ class BruteForce extends Pajitnov with MovePlayer {
   }
 
   @override
-  String? getInfo() {
+  String getInfo() {
     // need data
     if (_linesCount.isEmpty) {
-      return null;
+      return '';
     }
 
     // get some values
