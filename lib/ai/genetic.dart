@@ -8,6 +8,8 @@ import 'package:tetris/ai/phenotype.dart';
 import 'package:tetris/ai/result.dart';
 import 'package:tetris/model/game.dart';
 
+import '../utils/consts.dart';
+
 class GeneticInfo {
   int? currGeneration;
   int? currIndividual;
@@ -28,9 +30,6 @@ abstract class TetrisEvaluatorAbstract<TetrisPhenotype, double,
 }
 
 class Genetic extends Pajitnov with MovePlayer {
-  static const int kMembersPerGeneration = 25;
-  static const int kRunsPerMember = 5;
-
   GeneticAlgorithm? _algorithm;
   late Generation<TetrisPhenotype, double, TetrisLinesResult> _firstGeneration;
   late TetrisEvaluatorAbstract _evaluator;
@@ -44,7 +43,7 @@ class Genetic extends Pajitnov with MovePlayer {
     // init 1st generation
     _firstGeneration = Generation<TetrisPhenotype, double, TetrisLinesResult>()
       ..members.addAll(List.generate(
-          kMembersPerGeneration, (i) => TetrisPhenotype.random(i)));
+          Consts.kMembersPerGeneration, (i) => TetrisPhenotype.random(i)));
 
     // evaluator
     if (multithread) {
@@ -56,7 +55,8 @@ class Genetic extends Pajitnov with MovePlayer {
     // breeder
     _breeder = GenerationBreeder<TetrisPhenotype, double, TetrisLinesResult>(
             () => TetrisPhenotype())
-          ..elitismCount = max(1, (kMembersPerGeneration * 0.05).round())
+          ..elitismCount =
+              max(1, (Consts.kMembersPerGeneration * Consts.kElitism).round())
         //..crossoverPropability = 0.8
         ;
 
@@ -148,10 +148,16 @@ class Genetic extends Pajitnov with MovePlayer {
   }
 
   GeneticInfo getGeneticInfo() {
+    // need some work to get current individual
+    int experiments = (_algorithm?.currentExperiment ?? -1) + 1;
+    int individuals = experiments -
+        (experiments ~/ Consts.kMembersPerGeneration) *
+            Consts.kMembersPerGeneration;
+
     // build
     GeneticInfo info = GeneticInfo();
     info.currGeneration = (_algorithm?.currentGeneration ?? -1) + 1;
-    info.currIndividual = (_algorithm?.currentExperiment ?? -1) + 1;
+    info.currIndividual = individuals;
     info.currExperiment = _evaluator.scores?.length ?? 0;
     info.lastScoreInd = _evaluator.scores == null || _evaluator.scores!.isEmpty
         ? 0

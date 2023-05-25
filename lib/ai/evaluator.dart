@@ -8,6 +8,8 @@ import 'package:tetris/ai/result.dart';
 import 'package:tetris/ai/smart.dart';
 import 'package:tetris/model/game.dart';
 
+import '../utils/consts.dart';
+
 class TetrisEvaluator
     extends PhenotypeEvaluator<TetrisPhenotype, double, TetrisLinesResult>
     implements TetrisEvaluatorAbstract {
@@ -24,10 +26,11 @@ class TetrisEvaluator
     // run 10 games
     Smart ai = Smart(phenotype: phenotype);
     while (true) {
-      await Future.delayed(Duration(microseconds: 100), () {
+      await Future.delayed(Duration(microseconds: Consts.kPauseMicroseconds),
+          () {
         ai.play(game, callback);
       });
-      if (scores.length == Genetic.kRunsPerMember) {
+      if (scores.length == Consts.kRunsPerMember) {
         break;
       }
       if (_cancel) {

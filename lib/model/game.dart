@@ -4,19 +4,9 @@ import 'package:tetris/model/tetromino.dart';
 import 'package:tetris/model/board.dart';
 import 'package:tetris/utils/randomizer.dart';
 
-class Game {
-  static const int kRandomBagSize = 7;
-  static const double kInitialSpeed = 1000;
-  static const int kIncreaseLevelEvery = 20;
-  static const int kTetrominoMovedPoint = 1;
-  static const int kTetrominoDroppedPoint = 10;
-  static const List<int> kLinesCompletedLines = [
-    1,
-    3,
-    5,
-    8,
-  ];
+import '../utils/consts.dart';
 
+class Game {
   int _level = 1;
   int _count = 0;
   int _lines = 0;
@@ -24,7 +14,7 @@ class Game {
 
   Board _board = Board();
   bool _finished = false;
-  Randomizer _randomizer = Randomizer(bagSize: kRandomBagSize);
+  Randomizer _randomizer = Randomizer(bagSize: Consts.kRandomBagSize);
   Tetromino? _nextTetromino;
   Tetromino? _currentTetromino;
 
@@ -41,7 +31,7 @@ class Game {
     clone._lines = this._lines;
     clone._score = this._score;
     clone._finished = this._finished;
-    clone._randomizer = Randomizer(bagSize: kRandomBagSize);
+    clone._randomizer = Randomizer(bagSize: Consts.kRandomBagSize);
 
     // clone board
     clone._board = this._board.clone();
@@ -106,13 +96,13 @@ class Game {
         _currentTetromino = null;
 
         // score
-        _score += kTetrominoDroppedPoint;
+        _score += Consts.kTetrominoDroppedPoint;
       } else {
         // simply move it down
         _currentTetromino!.y++;
 
         // score
-        _score += kTetrominoMovedPoint;
+        _score += Consts.kTetrominoMovedPoint;
       }
     }
 
@@ -219,13 +209,13 @@ class Game {
 
     // update score
     if (linesCompleted > 0) {
-      linesCompleted = kLinesCompletedLines[linesCompleted - 1];
+      linesCompleted = Consts.kLinesCompletedLines[linesCompleted - 1];
       this._lines += linesCompleted;
       this._score += linesCompleted * 100;
     }
 
     // update level
-    this._level = this._lines ~/ kIncreaseLevelEvery;
+    this._level = this._lines ~/ Consts.kIncreaseLevelEvery;
   }
 
   List<List<TetrominoType?>> getBoardState(bool includeCurrentTetromino) {

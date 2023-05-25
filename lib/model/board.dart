@@ -1,13 +1,15 @@
 import 'package:tetris/model/tetromino.dart';
 
+import '../utils/consts.dart';
+
 class Board {
   late List<List<TetrominoType?>> _state;
 
   final int width;
   final int height;
   Board({
-    this.width = 10,
-    this.height = 20,
+    this.width = Consts.kBoardWidth,
+    this.height = Consts.kBoardHeight,
   }) {
     // init
     this._state = List.generate(this.height, (_) {

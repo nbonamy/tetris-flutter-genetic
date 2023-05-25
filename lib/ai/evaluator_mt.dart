@@ -11,6 +11,8 @@ import 'package:tetris/ai/result.dart';
 import 'package:tetris/ai/smart.dart';
 import 'package:tetris/model/game.dart';
 
+import '../utils/consts.dart';
+
 class TetrisEvaluatorMT extends MultithreadedPhenotypeSerialEvaluator<
     TetrisPhenotype,
     double,
@@ -27,7 +29,7 @@ class TetrisEvaluatorMT extends MultithreadedPhenotypeSerialEvaluator<
   TetrisEvaluatorMT()
       : super((TetrisPhenotype phenotype, int index) {
           // need to run
-          if (index < Genetic.kRunsPerMember) {
+          if (index < Consts.kRunsPerMember) {
             return new TetrisTask(
               index: index,
               phenotype: phenotype,
@@ -73,7 +75,7 @@ class TetrisTask extends IsolateTask<TetrisPhenotype, TetrisLinesResult> {
     // init
     Console.moveToColumn(index);
     Console.write('◦');
-    Console.moveToColumn(Genetic.kRunsPerMember + 1);
+    Console.moveToColumn(Consts.kRunsPerMember + 1);
     Smart ai = Smart(phenotype: phenotype!);
 
     // run game
@@ -83,7 +85,7 @@ class TetrisTask extends IsolateTask<TetrisPhenotype, TetrisLinesResult> {
       if (game.isFinished) {
         Console.moveToColumn(index);
         stdout.write('•');
-        Console.moveToColumn(Genetic.kRunsPerMember + 1);
+        Console.moveToColumn(Consts.kRunsPerMember + 1);
         final result = TetrisLinesResult();
         result.scores.add(game.linesCompleted);
         return result;
