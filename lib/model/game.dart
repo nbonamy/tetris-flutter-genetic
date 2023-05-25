@@ -110,6 +110,7 @@ class Game {
     if (_finished == false && _currentTetromino == null) {
       _currentTetromino = _nextTetromino;
       _nextTetromino = _newTetromino();
+      _count++;
       while (_checkCollision(_currentTetromino!, 0, 0)) {
         _currentTetromino!.y--;
         _finished = true;

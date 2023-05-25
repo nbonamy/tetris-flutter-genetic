@@ -54,11 +54,11 @@ class Genetic extends Pajitnov with MovePlayer {
 
     // breeder
     _breeder = GenerationBreeder<TetrisPhenotype, double, TetrisLinesResult>(
-            () => TetrisPhenotype())
-          ..elitismCount =
-              max(1, (Consts.kMembersPerGeneration * Consts.kElitism).round())
-        //..crossoverPropability = 0.8
-        ;
+        () => TetrisPhenotype())
+      ..elitismCount =
+          max(1, (Consts.kMembersPerGeneration * Consts.kElitism).round())
+      ..mutationRate = Consts.kMutationRate
+      ..crossoverProbability = Consts.kCrossoverProbability;
 
     // init
     _csvReport = '\n';
