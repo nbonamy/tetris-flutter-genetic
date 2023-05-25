@@ -24,7 +24,7 @@ class TetrisEvaluator
     // run 10 games
     Smart ai = Smart(phenotype: phenotype);
     while (true) {
-      await Future.delayed(Duration(milliseconds: 10), () {
+      await Future.delayed(Duration(microseconds: 100), () {
         ai.play(game, callback);
       });
       if (scores.length == Genetic.kRunsPerMember) {

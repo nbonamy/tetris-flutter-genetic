@@ -87,7 +87,7 @@ class RealPlayer extends Player {
 }
 
 class BotPlayer extends Player {
-  Pajitnov _ai = BruteForce();
+  late Pajitnov _ai = BruteForce();
 
   BotPlayer({
     required super.ui,
@@ -139,8 +139,6 @@ class BotPlayer extends Player {
 }
 
 class GeneticPlayer extends BotPlayer {
-  late Pajitnov _ai;
-
   GeneticPlayer({
     required super.ui,
     bool multithread = false,
